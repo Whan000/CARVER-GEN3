@@ -1,5 +1,17 @@
 # CARVER-GEN3 Autonomous Robot Platform
 
+<p align="center">
+  <img src="https://img.shields.io/badge/ROS2-Humble-blue?style=flat-square&logo=ros" alt="ROS2 Humble">
+  <img src="https://img.shields.io/badge/Ubuntu-22.04-orange?style=flat-square&logo=ubuntu" alt="Ubuntu 22.04">
+  <img src="https://img.shields.io/badge/Python-3.10-yellow?style=flat-square&logo=python" alt="Python 3.10">
+  <img src="https://img.shields.io/badge/MOLA-SLAM-green?style=flat-square" alt="MOLA SLAM">
+  <img src="https://img.shields.io/badge/LiDAR-Livox%20MID360-red?style=flat-square" alt="Livox MID360">
+  <img src="https://img.shields.io/badge/MCU-STM32G474RE-blue?style=flat-square&logo=stmicroelectronics" alt="STM32G474RE">
+  <img src="https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square" alt="License MIT">
+  <img src="https://img.shields.io/badge/Drive-Rear%20Wheel-lightgrey?style=flat-square" alt="Rear Wheel Drive">
+  <img src="https://img.shields.io/badge/Steering-Ackermann-lightblue?style=flat-square" alt="Ackermann Steering">
+</p>
+
 ## Complete Technical Documentation
 
 **Version:** 3.0  
@@ -4351,7 +4363,73 @@ List dependencies
 - Document assumptions
 - Note known limitations
 
+### 15.5 Version Control
+
+**Git Workflow:**
+
+```bash
+# Create feature branch
+git checkout -b feature/new-controller
+
+# Make changes
+git add .
+git commit -m "Add new controller implementation"
+
+# Push to remote
+git push origin feature/new-controller
+
+# Create pull request
+# Review and merge
 ```
+
+**Commit Messages:**
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+Types: feat, fix, docs, style, refactor, test, chore
+
+Example:
+```
+feat(controller): Add MPC controller implementation
+
+Implement Model Predictive Control for path tracking.
+Uses cvxpy for optimization. Tested in simulation.
+
+Closes #42
+```
+
+### 15.6 Contributing
+
+**Process:**
+
+1. Fork repository
+2. Create feature branch
+3. Implement changes
+4. Add tests
+5. Update documentation
+6. Submit pull request
+
+**Pull Request Template:**
+```markdown
+## Description
+What does this PR do?
+
+## Testing
+How was it tested?
+
+## Checklist
+- [ ] Code follows style guidelines
+- [ ] Documentation updated
+- [ ] Tests added/pass
+- [ ] No breaking changes (or documented)
+```
+
+---
 
 ## 16. References
 
@@ -4456,5 +4534,7 @@ ros2 lifecycle set /node_name configure
 ---
 
 **Document Version:** 1.0  
-**Last Updated:** December 2025  
+**Last Updated:** December 2024  
 **Maintained by:** CARVER Development Team
+
+For questions, issues, or contributions, please visit the GitHub repository.
