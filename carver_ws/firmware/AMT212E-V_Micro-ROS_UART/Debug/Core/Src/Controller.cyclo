@@ -1,0 +1,5 @@
+../Core/Src/Controller.c:9:9:PWM_Satuation	3
+../Core/Src/Controller.c:15:6:PID_CONTROLLER_Init	1
+../Core/Src/Controller.c:25:7:PID_CONTROLLER_Compute	5
+../Core/Src/Controller.c:37:6:DC_MOTOR_FFD_Init	1
+../Core/Src/Controller.c:44:7:DC_MOTOR_FFD_Compute	1

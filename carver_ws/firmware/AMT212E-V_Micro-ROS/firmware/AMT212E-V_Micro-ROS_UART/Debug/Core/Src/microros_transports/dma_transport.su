@@ -1,0 +1,4 @@
+../Core/Src/microros_transports/dma_transport.c:21:6:cubemx_transport_open	24	static
+../Core/Src/microros_transports/dma_transport.c:27:6:cubemx_transport_close	24	static
+../Core/Src/microros_transports/dma_transport.c:33:8:cubemx_transport_write	32	static
+../Core/Src/microros_transports/dma_transport.c:49:8:cubemx_transport_read	40	static,ignoring_inline_asm

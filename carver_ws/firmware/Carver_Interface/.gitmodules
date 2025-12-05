@@ -1,0 +1,3 @@
+[submodule "micro_ros_stm32cubemx_utils"]
+	path = micro_ros_stm32cubemx_utils
+	url = https://github.com/CARVER-NEXT-GEN/micro_ros_stm32cubemx_utils.git

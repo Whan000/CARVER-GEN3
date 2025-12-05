@@ -1,0 +1,15 @@
+/home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/ament_index/resource_index/package_run_dependencies/AMT212E-V_Interface
+/home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/ament_index/resource_index/parent_prefix_path/AMT212E-V_Interface
+/home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/environment/ament_prefix_path.sh
+/home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/environment/ament_prefix_path.dsv
+/home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/environment/path.sh
+/home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/environment/path.dsv
+/home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/local_setup.bash
+/home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/local_setup.sh
+/home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/local_setup.zsh
+/home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/local_setup.dsv
+/home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/package.dsv
+/home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/ament_index/resource_index/packages/AMT212E-V_Interface
+/home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/cmake/AMT212E-V_InterfaceConfig.cmake
+/home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/cmake/AMT212E-V_InterfaceConfig-version.cmake
+/home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/package.xml

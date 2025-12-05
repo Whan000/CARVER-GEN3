@@ -1,0 +1,457 @@
+<?xml version="1.0"?>
+<robot name="simple_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:include filename="carver_controller_classic.xacro"/>
+
+    <xacro:property name="body_length" value="1.0"/>
+    <xacro:property name="body_width" value="0.5"/>
+    <xacro:property name="body_height" value="0.25"/>
+    
+    <xacro:property name="wheel_radius" value="0.12"/>
+    <xacro:property name="wheel_thickness" value="0.06"/>
+    
+    <xacro:property name="steering_radius" value="0.025"/>
+    <xacro:property name="steering_length" value="0.04"/>
+
+    <link name="base_footprint"/>
+
+    <link name="base_link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="40.0"/>
+            <inertia ixx="1.5" ixy="0.0" ixz="0.0"
+                     iyy="4.0" iyz="0.0" izz="5.0"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="${body_length} ${body_width} ${body_height}"/>
+            </geometry>
+            <material name="robot_blue">
+                <color rgba="0.2 0.4 0.8 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="${body_length} ${body_width} ${body_height}"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="base_footprint_joint" type="fixed">
+        <parent link="base_footprint"/>
+        <child link="base_link"/>
+        <origin xyz="0 0 0.3" rpy="0 0 0"/>
+    </joint>
+
+    <link name="front_right_steering_Link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.3"/>
+            <inertia ixx="0.0005" ixy="0.0" ixz="0.0"
+                     iyy="0.0005" iyz="0.0" izz="0.0005"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${steering_radius}" length="${steering_length}"/>
+            </geometry>
+            <material name="dark_grey">
+                <color rgba="0.3 0.3 0.3 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${steering_radius}" length="${steering_length}"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="base_front_right_steering_joint" type="revolute">
+        <origin xyz="0.4 -0.3 -0.125" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="front_right_steering_Link"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-1.57" upper="1.57" effort="50" velocity="5"/>
+    </joint>
+
+    <link name="front_right_wheel_Link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="1.5"/>
+            <inertia ixx="0.015" ixy="0.0" ixz="0.0"
+                     iyy="0.015" iyz="0.0" izz="0.015"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
+            </geometry>
+            <material name="wheel_black">
+                <color rgba="0.1 0.1 0.1 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="front_right_steering_front_right_wheel_joint" type="continuous">
+        <origin xyz="0 0 -0.035" rpy="1.5708 0 0"/>
+        <parent link="front_right_steering_Link"/>
+        <child link="front_right_wheel_Link"/>
+        <axis xyz="0 0 1"/>
+        <limit effort="50" velocity="50"/>
+        <dynamics damping="0.05" friction="0.05"/>
+    </joint>
+
+    <link name="front_left_steering_Link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.3"/>
+            <inertia ixx="0.0005" ixy="0.0" ixz="0.0"
+                     iyy="0.0005" iyz="0.0" izz="0.0005"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${steering_radius}" length="${steering_length}"/>
+            </geometry>
+            <material name="dark_grey">
+                <color rgba="0.3 0.3 0.3 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${steering_radius}" length="${steering_length}"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="base_front_left_steering_joint" type="revolute">
+        <origin xyz="0.4 0.3 -0.125" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="front_left_steering_Link"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-1.57" upper="1.57" effort="50" velocity="5"/>
+    </joint>
+
+    <link name="front_left_wheel_Link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="1.5"/>
+            <inertia ixx="0.015" ixy="0.0" ixz="0.0"
+                     iyy="0.015" iyz="0.0" izz="0.015"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
+            </geometry>
+            <material name="wheel_black">
+                <color rgba="0.1 0.1 0.1 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="front_left_steering_front_left_wheel_joint" type="continuous">
+        <origin xyz="0 0 -0.035" rpy="1.5708 0 0"/>
+        <parent link="front_left_steering_Link"/>
+        <child link="front_left_wheel_Link"/>
+        <axis xyz="0 0 1"/>
+        <limit effort="50" velocity="50"/>
+        <dynamics damping="0.05" friction="0.05"/>
+    </joint>
+
+    <link name="rear_right_wheel_Link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="1.5"/>
+            <inertia ixx="0.015" ixy="0.0" ixz="0.0"
+                     iyy="0.015" iyz="0.0" izz="0.015"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
+            </geometry>
+            <material name="wheel_black">
+                <color rgba="0.1 0.1 0.1 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="base_rear_right_wheel_joint" type="continuous">
+        <origin xyz="-0.4 -0.3 -0.18" rpy="1.5708 0 0"/>
+        <parent link="base_link"/>
+        <child link="rear_right_wheel_Link"/>
+        <axis xyz="0 0 1"/>
+        <limit effort="50" velocity="50"/>
+        <dynamics damping="0.05" friction="0.05"/>
+    </joint>
+
+    <link name="rear_left_wheel_Link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="1.5"/>
+            <inertia ixx="0.015" ixy="0.0" ixz="0.0"
+                     iyy="0.015" iyz="0.0" izz="0.015"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
+            </geometry>
+            <material name="wheel_black">
+                <color rgba="0.1 0.1 0.1 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="base_rear_left_wheel_joint" type="continuous">
+        <origin xyz="-0.4 0.3 -0.18" rpy="1.5708 0 0"/>
+        <parent link="base_link"/>
+        <child link="rear_left_wheel_Link"/>
+        <axis xyz="0 0 1"/>
+        <limit effort="50" velocity="50"/>
+        <dynamics damping="0.05" friction="0.05"/>
+    </joint>
+
+    <link name="velodyne_base_link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.8"/>
+            <inertia ixx="0.005" ixy="0.0" ixz="0.0"
+                     iyy="0.005" iyz="0.0" izz="0.005"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.05" length="0.08"/>
+            </geometry>
+            <material name="lidar_color">
+                <color rgba="0.15 0.15 0.15 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.05" length="0.08"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="velodyne_base_joint" type="fixed">
+        <origin xyz="0 0 0.2" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="velodyne_base_link"/>
+    </joint>
+
+    <link name="velodyne">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.1"/>
+            <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                     iyy="0.001" iyz="0.0" izz="0.001"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.04" length="0.05"/>
+            </geometry>
+            <material name="sensor_color">
+                <color rgba="0.05 0.05 0.05 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.04" length="0.05"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="velodyne_joint" type="fixed">
+        <origin xyz="0 0 0.06" rpy="0 0 0"/>
+        <parent link="velodyne_base_link"/>
+        <child link="velodyne"/>
+    </joint>
+
+    <link name="imu_link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.005"/>
+            <inertia ixx="0.00001" ixy="0.0" ixz="0.0"
+                     iyy="0.00001" iyz="0.0" izz="0.00001"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.015 0.015 0.008"/>
+            </geometry>
+            <material name="imu_green">
+                <color rgba="0.0 0.8 0.2 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.015 0.015 0.008"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="imu_joint" type="fixed">
+        <origin xyz="0.05 0 0.08" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="imu_link"/>
+    </joint>
+
+    <gazebo reference="rear_right_wheel_Link">
+        <mu1>1.2</mu1>
+        <mu2>1.2</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+        <minDepth>0.001</minDepth>
+        <maxVel>1.0</maxVel>
+        <material>Gazebo/DarkGrey</material>
+    </gazebo>
+
+    <gazebo reference="rear_left_wheel_Link">
+        <mu1>1.2</mu1>
+        <mu2>1.2</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+        <minDepth>0.001</minDepth>
+        <maxVel>1.0</maxVel>
+        <material>Gazebo/DarkGrey</material>
+    </gazebo>
+
+    <gazebo reference="front_right_wheel_Link">
+        <mu1>1.2</mu1>
+        <mu2>1.2</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+        <minDepth>0.001</minDepth>
+        <maxVel>1.0</maxVel>
+        <material>Gazebo/DarkGrey</material>
+    </gazebo>
+
+    <gazebo reference="front_left_wheel_Link">
+        <mu1>1.2</mu1>
+        <mu2>1.2</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+        <minDepth>0.001</minDepth>
+        <maxVel>1.0</maxVel>
+        <material>Gazebo/DarkGrey</material>
+    </gazebo>
+
+    <gazebo reference="velodyne">
+        <sensor name="velodyne_sensor" type="ray">
+            <always_on>true</always_on>
+            <update_rate>10</update_rate>
+            <visualize>false</visualize>
+            <pose>0 0 0 0 0 0</pose>
+            <ray>
+                <scan>
+                    <horizontal>
+                        <samples>1800</samples>
+                        <resolution>1</resolution>
+                        <min_angle>-3.141592</min_angle>
+                        <max_angle>3.141592</max_angle>
+                    </horizontal>
+                    <vertical>
+                        <samples>16</samples>
+                        <resolution>1</resolution>
+                        <min_angle>-0.2617993878</min_angle>
+                        <max_angle>0.2617993878</max_angle>
+                    </vertical>
+                </scan>
+                <range>
+                    <min>0.05</min>
+                    <max>30.0</max>
+                    <resolution>0.01</resolution>
+                </range>
+                <noise>
+                    <type>gaussian</type>
+                    <mean>0.0</mean>
+                    <stddev>0.01</stddev>
+                </noise>
+            </ray>
+            <plugin name="velodyne_plugin" filename="libgazebo_ros_velodyne_laser.so">
+                <topicName>/velodyne_points</topicName>
+                <frameName>velodyne</frameName>
+                <organize_cloud>false</organize_cloud>
+                <min_range>0.05</min_range>
+                <max_range>30.0</max_range>
+                <gaussianNoise>0.008</gaussianNoise>
+            </plugin>
+        </sensor>
+    </gazebo>
+
+    <gazebo reference="imu_link">
+        <sensor name="imu_sensor" type="imu">
+            <always_on>true</always_on>
+            <update_rate>100</update_rate>
+            <visualize>true</visualize>
+            <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+                <ros>
+                    <namespace>/</namespace>
+                    <remapping>~/out:=imu/data</remapping>
+                </ros>
+                <initial_orientation_as_reference>false</initial_orientation_as_reference>
+                <frame_name>imu_link</frame_name>
+            </plugin>
+        </sensor>
+    </gazebo>
+
+    <!-- Comment for testing localization -->
+    <gazebo>
+        <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
+            <update_rate>50</update_rate>
+            <body_name>base_footprint</body_name>
+            <frame_name>odom</frame_name>
+            <gaussian_noise>0.01</gaussian_noise>
+            <xyz_offset>0 0 0</xyz_offset>
+            <rpy_offset>0 0 0</rpy_offset>
+            <ros>
+                <namespace>/</namespace>
+                <remapping>odom:=odom</remapping>
+            </ros>
+        </plugin>
+        
+        <plugin name="ground_truth" filename="libgazebo_ros_planar_move.so">
+            <update_rate>50</update_rate>
+            <robot_base_frame>base_footprint</robot_base_frame>
+            <odometry_frame>odom</odometry_frame>
+            <publish_odom>false</publish_odom>
+            <publish_odom_tf>true</publish_odom_tf>
+        </plugin>
+    </gazebo>
+
+</robot>

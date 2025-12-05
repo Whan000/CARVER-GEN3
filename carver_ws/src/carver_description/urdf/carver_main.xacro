@@ -1,0 +1,359 @@
+<?xml version="1.0"?>
+<robot name="carver_description" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:include filename="carver_params.xacro"/>
+    <xacro:include filename="carver_material.xacro"/>
+    <xacro:include filename="carver_inertia.xacro"/>
+
+    <link name="base_footprint">
+    <xacro:base_link_inertial/>
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="${mesh_package}base_link.STL"/>
+        </geometry>
+        <material name="main_body_color"/>
+    </visual>
+    <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="${mesh_package}base_link.STL"/>
+        </geometry>
+    </collision>
+    </link>
+
+    <link name="base_link"></link>
+
+    <joint name="world_base_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="base_footprint"/>
+        <origin xyz="0 0 ${base_footprint_height}" rpy="0 0 0"/>
+    </joint>
+
+    <link name="front_right_steering_Link">
+    <xacro:front_right_steering_inertial/>
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="${mesh_package}front_right_steering_Link.STL"/>
+        </geometry>
+        <material name="main_body_color"/>
+    </visual>
+    <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="${mesh_package}front_right_steering_Link.STL"/>
+        </geometry>
+    </collision>
+    </link>
+
+    <joint name="base_front_right_steering_joint" type="revolute">
+        <origin xyz="${front_wheel_x} ${front_wheel_y_right} ${front_wheel_z}" rpy="0 0 0"/>
+        <parent link="base_footprint"/>
+        <child link="front_right_steering_Link"/>
+        <axis xyz="0 0 -1"/>
+        <limit lower="${steering_limit_lower}" upper="${steering_limit_upper}" 
+                effort="${joint_effort_limit}" velocity="${joint_velocity_limit}"/>
+    </joint>
+
+    <link name="front_right_wheel_Link">
+    <xacro:front_right_wheel_inertial/>
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <cylinder radius="0.15" length="0.076"/>
+        </geometry>
+        <material name="main_body_color"/>
+    </visual>
+    <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <cylinder radius="0.15" length="0.076"/>
+        </geometry>
+    </collision>
+    </link>
+
+    <joint name="front_right_steering_front_right_wheel_joint" type="continuous">
+        <origin xyz="${steering_to_wheel_x} ${steering_to_wheel_y_right} ${steering_to_wheel_z}" 
+                rpy="${right_wheel_rotation_rpy}"/>
+        <parent link="front_right_steering_Link"/>
+        <child link="front_right_wheel_Link"/>
+        <axis xyz="${front_right_wheel_axis_x} 0 ${front_right_wheel_axis_z}"/>
+        <limit effort="${joint_effort_limit}" velocity="${joint_velocity_limit}"/>
+        <dynamics damping="${joint_damping}" friction="${joint_friction}"/>
+    </joint>
+
+    <link name="front_left_steering_Link">
+    <xacro:front_left_steering_inertial/>
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="${mesh_package}front_left_steering_Link.STL"/>
+        </geometry>
+        <material name="main_body_color"/>
+    </visual>
+    <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="${mesh_package}front_left_steering_Link.STL"/>
+        </geometry>
+    </collision>
+    </link>
+
+    <joint name="base_front_left_steering_joint" type="revolute">
+        <origin xyz="${front_wheel_x} ${front_wheel_y_left} ${front_wheel_z}" rpy="0 0 0"/>
+        <parent link="base_footprint"/>
+        <child link="front_left_steering_Link"/>
+        <axis xyz="0 0 -1"/>
+        <limit lower="${steering_limit_lower}" upper="${steering_limit_upper}" 
+                effort="${joint_effort_limit}" velocity="${joint_velocity_limit}"/>
+    </joint>
+
+    <link name="front_left_wheel_Link">
+    <xacro:front_right_wheel_inertial/>
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <cylinder radius="0.15" length="0.076"/>
+        </geometry>
+        <material name="main_body_color"/>
+    </visual>
+    <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <cylinder radius="0.15" length="0.076"/>
+        </geometry>
+    </collision>
+    </link>
+
+    <joint name="front_left_steering_front_left_wheel_joint" type="continuous">
+        <origin xyz="${steering_to_wheel_x} ${steering_to_wheel_y_left} ${steering_to_wheel_z}" 
+                rpy="${left_wheel_rotation_rpy}"/>
+        <parent link="front_left_steering_Link"/>
+        <child link="front_left_wheel_Link"/>
+        <axis xyz="${front_left_wheel_axis_x} 0 ${front_left_wheel_axis_z}"/>
+        <limit effort="${joint_effort_limit}" velocity="${joint_velocity_limit}"/>
+        <dynamics damping="${joint_damping}" friction="${joint_friction}"/>
+    </joint>
+
+    <link name="rear_right_wheel_Link">
+    <xacro:rear_right_wheel_inertial/>
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <cylinder radius="0.15" length="0.076"/>
+        </geometry>
+        <material name="main_body_color"/>
+    </visual>
+    <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <cylinder radius="0.15" length="0.076"/>
+        </geometry>
+    </collision>
+    </link>
+
+    <joint name="base_rear_right_wheel_joint" type="continuous">
+        <origin xyz="${rear_wheel_x} ${rear_wheel_y_right} ${rear_wheel_z}" rpy="${right_wheel_rotation_rpy}"/>
+        <parent link="base_footprint"/>
+        <child link="rear_right_wheel_Link"/>
+        <axis xyz="0 0 -1"/>
+        <limit effort="${joint_effort_limit}" velocity="${joint_velocity_limit}"/>
+        <dynamics damping="${joint_damping}" friction="${joint_friction}"/>
+    </joint>
+
+    <link name="rear_left_wheel_Link">
+    <xacro:rear_left_wheel_inertial/>
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <cylinder radius="0.15" length="0.076"/>
+        </geometry>
+        <material name="main_body_color"/>
+    </visual>
+    <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <cylinder radius="0.15" length="0.076"/>
+        </geometry>
+    </collision>
+    </link>
+
+    <joint name="base_rear_left_wheel_joint" type="continuous">
+        <origin xyz="${rear_wheel_x} ${rear_wheel_y_left} ${rear_wheel_z}" rpy="${left_wheel_rotation_rpy}"/>
+        <parent link="base_footprint"/>
+        <child link="rear_left_wheel_Link"/>
+        <axis xyz="0 0 1"/>
+        <limit effort="${joint_effort_limit}" velocity="${joint_velocity_limit}"/>
+        <dynamics damping="${joint_damping}" friction="${joint_friction}"/>
+    </joint>
+
+    <link name="livox_frame">
+    <xacro:c16_inertial/>
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="${mesh_package}C16_Link.STL"/>
+        </geometry>
+        <material name="main_body_color"/>
+    </visual>
+    <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="${mesh_package}C16_Link.STL"/>
+        </geometry>
+    </collision>
+    </link>
+
+    <joint name="base_C16_joint" type="fixed">
+        <origin xyz="${c16_x} ${c16_y} ${c16_z}" rpy="0 0 0"/>
+        <parent link="base_footprint"/>
+        <child link="livox_frame"/>
+    </joint>
+
+    <link name="T265_Link">
+    <xacro:t265_inertial/>
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="${mesh_package}T265_Link.STL"/>
+        </geometry>
+        <material name="sensor_color"/>
+    </visual>
+    <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="${mesh_package}T265_Link.STL"/>
+        </geometry>
+    </collision>
+    </link>
+
+    <joint name="base_T265_joint" type="fixed">
+        <origin xyz="${t265_x} ${t265_y} ${t265_z}" rpy="0 0 0"/>
+        <parent link="base_footprint"/>
+        <child link="T265_Link"/>
+    </joint>
+
+    <link name="LD_SICK_Link">
+    <xacro:ld_sick_inertial/>
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="${mesh_package}LD_SICK_Link.STL"/>
+        </geometry>
+        <material name="main_body_color"/>
+    </visual>
+    <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="${mesh_package}LD_SICK_Link.STL"/>
+        </geometry>
+    </collision>
+    </link>
+
+    <joint name="base_LD_SICK_joint" type="fixed">
+        <origin xyz="${ld_sick_x} ${ld_sick_y} ${ld_sick_z}" rpy="0 0 0"/>
+        <parent link="base_footprint"/>
+        <child link="LD_SICK_Link"/>
+    </joint>
+
+    <link name="laser"></link>
+
+    <joint name="base_laser_joint" type="fixed">
+        <parent link="base_footprint"/>
+        <child link="laser"/>
+        <origin xyz="${laser_x} ${laser_y} ${laser_z}" rpy="0 0 0"/>
+    </joint>
+
+    <link name="RPLIDAR_LB_Link">
+    <xacro:rplidar_lb_inertial/>
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="${mesh_package}RPLIDAR_LB_Link.STL"/>
+        </geometry>
+        <material name="lidar_color"/>
+    </visual>
+    <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="${mesh_package}RPLIDAR_LB_Link.STL"/>
+        </geometry>
+    </collision>
+    </link>
+
+    <joint name="laser_RPLIDAR_LB_joint" type="fixed">
+        <origin xyz="${rplidar_lb_x} ${rplidar_lb_y} ${rplidar_lb_z}" rpy="0 0 ${rplidar_lb_yaw}"/>
+        <parent link="laser"/>
+        <child link="RPLIDAR_LB_Link"/>
+    </joint>
+
+    <link name="IMU_R_Link">
+    <xacro:imu_r_inertial/>
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="${mesh_package}IMU_R_Link.STL"/>
+        </geometry>
+        <material name="main_body_color"/>
+    </visual>
+    <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="${mesh_package}IMU_R_Link.STL"/>
+        </geometry>
+    </collision>
+    </link>
+
+    <joint name="base_IMU_R_joint" type="fixed">
+        <origin xyz="${imu_r_x} ${imu_r_y} ${imu_r_z}" rpy="0 0 0"/>
+        <parent link="base_footprint"/>
+        <child link="IMU_R_Link"/>
+    </joint>
+
+    <link name="IMU_L_Link">
+    <xacro:imu_l_inertial/>
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="${mesh_package}IMU_L_Link.STL"/>
+        </geometry>
+        <material name="main_body_color"/>
+    </visual>
+    <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="${mesh_package}IMU_L_Link.STL"/>
+        </geometry>
+    </collision>
+    </link>
+
+    <joint name="base_IMU_L_joint" type="fixed">
+        <origin xyz="${imu_l_x} ${imu_l_y} ${imu_l_z}" rpy="0 0 0"/>
+        <parent link="base_footprint"/>
+        <child link="IMU_L_Link"/>
+    </joint>
+
+    <link name="RPLIDAR_RF_Link">
+    <xacro:rplidar_rf_inertial/>
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="${mesh_package}RPLIDAR_RF_Link.STL"/>
+        </geometry>
+        <material name="lidar_color"/>
+    </visual>
+    <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <mesh filename="${mesh_package}RPLIDAR_RF_Link.STL"/>
+        </geometry>
+    </collision>
+    </link>
+
+    <joint name="laser_RPLIDAR_RF_joint" type="fixed">
+        <origin xyz="${rplidar_rf_x} ${rplidar_rf_y} ${rplidar_rf_z}" rpy="0 0 0"/>
+        <parent link="laser"/>
+        <child link="RPLIDAR_RF_Link"/>
+    </joint>
+</robot>

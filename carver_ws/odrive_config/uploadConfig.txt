@@ -1,0 +1,2 @@
+odrivetool restore-config OdriveConfig.json
+odrivetool backup-config OdriveConfig_new.json

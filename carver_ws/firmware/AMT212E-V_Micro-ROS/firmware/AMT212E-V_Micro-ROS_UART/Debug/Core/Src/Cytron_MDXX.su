@@ -1,0 +1,3 @@
+../Core/Src/Cytron_MDXX.c:9:6:MDXX_init	24	static
+../Core/Src/Cytron_MDXX.c:19:6:MDXX_set_duty	24	static
+../Core/Src/Cytron_MDXX.c:37:6:MDXX_set_range	24	static

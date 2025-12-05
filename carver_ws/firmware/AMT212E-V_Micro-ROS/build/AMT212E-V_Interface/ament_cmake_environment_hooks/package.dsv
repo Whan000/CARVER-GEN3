@@ -1,0 +1,4 @@
+source;share/AMT212E-V_Interface/local_setup.bash
+source;share/AMT212E-V_Interface/local_setup.dsv
+source;share/AMT212E-V_Interface/local_setup.sh
+source;share/AMT212E-V_Interface/local_setup.zsh

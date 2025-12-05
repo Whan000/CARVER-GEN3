@@ -1,0 +1,15 @@
+../Core/Src/BNO055.c:10:26:WriteReg	40	static
+../Core/Src/BNO055.c:19:26:ReadReg	48	static
+../Core/Src/BNO055.c:28:26:ReadRegs	56	static
+../Core/Src/BNO055.c:37:19:BNO055_Init	32	static
+../Core/Src/BNO055.c:84:19:BNO055_SetMode	24	static
+../Core/Src/BNO055.c:111:19:BNO055_SetAxisRemap	24	static
+../Core/Src/BNO055.c:129:19:BNO055_LoadCalibration	56	static
+../Core/Src/BNO055.c:171:19:BNO055_GetCalibration	40	static
+../Core/Src/BNO055.c:197:19:BNO055_GetCalibrationStatus	24	static
+../Core/Src/BNO055.c:214:6:BNO055_IsCalibrated	16	static
+../Core/Src/BNO055.c:220:6:BNO055_IsResponding	24	static
+../Core/Src/BNO055.c:226:19:BNO055_SoftReset	16	static
+../Core/Src/BNO055.c:236:19:BNO055_Update	104	static
+../Core/Src/BNO055.c:293:19:BNO055_UpdateDMA	32	static
+../Core/Src/BNO055.c:311:6:BNO055_ProcessDMA	24	static

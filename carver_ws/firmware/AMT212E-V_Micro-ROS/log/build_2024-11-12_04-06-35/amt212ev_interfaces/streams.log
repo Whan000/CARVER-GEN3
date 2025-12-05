@@ -1,0 +1,50 @@
+[0.010s] Invoking command in '/home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/build/amt212ev_interfaces': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/kireiji/ros2_ws/install/my_py_pkg:/opt/ros/humble /usr/bin/cmake --build /home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/build/amt212ev_interfaces -- -j16 -l16
+[0.026s] -- Found ament_cmake: 1.3.10 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.129s] -- Found rosidl_default_generators: 1.2.0 (/opt/ros/humble/share/rosidl_default_generators/cmake)
+[0.134s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.141s] -- Found rosidl_adapter: 3.1.5 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[0.179s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.207s] -- Found ament_lint_auto: 0.12.11 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[0.360s] [31mCMake Error at /opt/ros/humble/share/rosidl_adapter/cmake/rosidl_adapt_interfaces.cmake:59 (message):
+[0.361s]   execute_process(/usr/local/bin/python3 -m rosidl_adapter --package-name
+[0.361s]   amt212ev_interfaces --arguments-file
+[0.361s]   /home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/build/amt212ev_interfaces/rosidl_adapter__arguments__amt212ev_interfaces.json
+[0.361s]   --output-dir
+[0.361s]   /home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/build/amt212ev_interfaces/rosidl_adapter/amt212ev_interfaces
+[0.361s]   --output-file
+[0.361s]   /home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/build/amt212ev_interfaces/rosidl_adapter/amt212ev_interfaces.idls)
+[0.361s]   returned error code 1:
+[0.361s] 
+[0.361s]   Traceback (most recent call last):
+[0.361s] 
+[0.361s]     File "/usr/local/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+[0.361s]       return _run_code(code, main_globals, None,
+[0.361s]     File "/usr/local/lib/python3.10/runpy.py", line 86, in _run_code
+[0.361s]       exec(code, run_globals)
+[0.361s]     File "/opt/ros/humble/local/lib/python3.10/dist-packages/rosidl_adapter/__main__.py", line 19, in <module>
+[0.361s]       sys.exit(main())
+[0.361s]     File "/opt/ros/humble/local/lib/python3.10/dist-packages/rosidl_adapter/main.py", line 53, in main
+[0.361s]       abs_idl_file = convert_to_idl(
+[0.361s]     File "/opt/ros/humble/local/lib/python3.10/dist-packages/rosidl_adapter/__init__.py", line 19, in convert_to_idl
+[0.362s]       return convert_msg_to_idl(
+[0.362s]     File "/opt/ros/humble/local/lib/python3.10/dist-packages/rosidl_adapter/msg/__init__.py", line 28, in convert_msg_to_idl
+[0.362s]       msg = parse_message_string(package_name, input_file.stem, content)
+[0.362s]     File "/opt/ros/humble/local/lib/python3.10/dist-packages/rosidl_adapter/parser.py", line 544, in parse_message_string
+[0.362s]       msg = MessageSpecification(pkg_name, msg_name, fields, constants)
+[0.362s]     File "/opt/ros/humble/local/lib/python3.10/dist-packages/rosidl_adapter/parser.py", line 388, in __init__
+[0.362s]       self.base_type = BaseType(
+[0.362s]     File "/opt/ros/humble/local/lib/python3.10/dist-packages/rosidl_adapter/parser.py", line 205, in __init__
+[0.362s]       raise InvalidResourceName(
+[0.362s] 
+[0.362s]   rosidl_adapter.parser.InvalidResourceName: 'Amt_Read' is an invalid message
+[0.362s]   name.  It should have the pattern '^[A-Z][A-Za-z0-9]*$'
+[0.362s] 
+[0.362s] Call Stack (most recent call first):
+[0.362s]   /opt/ros/humble/share/rosidl_cmake/cmake/rosidl_generate_interfaces.cmake:130 (rosidl_adapt_interfaces)
+[0.362s]   CMakeLists.txt:27 (rosidl_generate_interfaces)
+[0.362s] 
+[0.362s] [0m
+[0.362s] -- Configuring incomplete, errors occurred!
+[0.362s] See also "/home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/build/amt212ev_interfaces/CMakeFiles/CMakeOutput.log".
+[0.365s] gmake: *** [Makefile:226: cmake_check_build_system] Error 1
+[0.366s] Invoked command in '/home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/build/amt212ev_interfaces' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/kireiji/ros2_ws/install/my_py_pkg:/opt/ros/humble /usr/bin/cmake --build /home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/build/amt212ev_interfaces -- -j16 -l16

@@ -1,0 +1,9 @@
+
+/build
+/install
+/log
+/.vscode
+/firmware/.metadata
+/map_maker/pcd
+/map_maker/output
+/src/.vscode

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <material name="main_body_color">
+    <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+    </material>
+
+    <material name="sensor_color">
+    <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1"/>
+    </material>
+
+    <material name="lidar_color">
+    <color rgba="0.4 0.4 0.4 1"/>
+    </material>
+
+</robot>

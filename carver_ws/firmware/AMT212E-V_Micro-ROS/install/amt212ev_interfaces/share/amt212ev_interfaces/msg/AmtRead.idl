@@ -1,0 +1,14 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from amt212ev_interfaces/msg/AmtRead.msg
+// generated code does not contain a copyright notice
+
+
+module amt212ev_interfaces {
+  module msg {
+    struct AmtRead {
+      double rads;
+
+      double radps;
+    };
+  };
+};

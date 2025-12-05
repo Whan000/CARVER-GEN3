@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:property name="wheel_base_length" value="1.276"/>
+    <xacro:property name="wheel_track_width" value="0.569"/>
+    <xacro:property name="base_footprint_height" value="0.345"/>
+
+    <xacro:property name="front_wheel_x" value="0.639118924633511"/>
+    <xacro:property name="front_wheel_y_right" value="-0.284499999999994"/>
+    <xacro:property name="front_wheel_y_left" value="0.284499999999994"/>
+    <xacro:property name="front_wheel_z" value="-0.158749999999999"/>
+
+    <xacro:property name="rear_wheel_x" value="-0.636881075366491"/>
+    <xacro:property name="rear_wheel_y_right" value="-0.3955"/>
+    <xacro:property name="rear_wheel_y_left" value="0.3955"/>
+    <xacro:property name="rear_wheel_z" value="-0.195"/>
+
+    <xacro:property name="steering_to_wheel_x" value="-0.00404234340824972"/>
+    <xacro:property name="steering_to_wheel_y_right" value="-0.110926369542007"/>
+    <xacro:property name="steering_to_wheel_y_left" value="0.110926369542007"/>
+    <xacro:property name="steering_to_wheel_z" value="-0.03625"/>
+
+    <xacro:property name="c16_x" value="0.237767026438191"/>
+    <xacro:property name="c16_y" value="0"/>
+    <xacro:property name="c16_z" value="1.56788196587259"/>
+
+    <xacro:property name="t265_x" value="0.914568924633506"/>
+    <xacro:property name="t265_y" value="0.000699999999822833"/>
+    <xacro:property name="t265_z" value="0.423999999999455"/>
+
+    <xacro:property name="l515_x" value="0.929717002207267"/>
+    <xacro:property name="l515_y" value="-1.17161560733146E-05"/>
+    <xacro:property name="l515_z" value="-0.0149951470092575"/>
+
+    <xacro:property name="ld_sick_x" value="0.942318924633513"/>
+    <xacro:property name="ld_sick_y" value="0"/>
+    <xacro:property name="ld_sick_z" value="0.215"/>
+
+    <xacro:property name="laser_x" value="0"/>
+    <xacro:property name="laser_y" value="0"/>
+    <xacro:property name="laser_z" value="0.154015"/>
+
+    <xacro:property name="rplidar_lb_x" value="-0.851155901465486"/>
+    <xacro:property name="rplidar_lb_y" value="0.34071809177296"/>
+    <xacro:property name="rplidar_lb_z" value="0"/>
+    <xacro:property name="rplidar_lb_yaw" value="3.14124991984497"/>
+
+    <xacro:property name="rplidar_rf_x" value="0.912523944720348"/>
+    <xacro:property name="rplidar_rf_y" value="-0.381327891424126"/>
+    <xacro:property name="rplidar_rf_z" value="0"/>
+
+    <xacro:property name="imu_r_x" value="0.0271694412238607"/>
+    <xacro:property name="imu_r_y" value="-0.0191012435918216"/>
+    <xacro:property name="imu_r_z" value="0.383"/>
+
+    <xacro:property name="imu_l_x" value="0.029419441223861"/>
+    <xacro:property name="imu_l_y" value="0.0191387564081886"/>
+    <xacro:property name="imu_l_z" value="0.383"/>
+
+    <xacro:property name="steering_limit_lower" value="-3.14"/>
+    <xacro:property name="steering_limit_upper" value="3.14"/>
+    <xacro:property name="joint_effort_limit" value="100"/>
+    <xacro:property name="joint_velocity_limit" value="100"/>
+
+    <xacro:property name="left_wheel_rotation_rpy" value="-1.5707963267949 0 0"/>
+    <xacro:property name="right_wheel_rotation_rpy" value="-1.5707963267949 0 3.14"/>
+
+    <xacro:property name="joint_damping" value="0.01"/>
+    <xacro:property name="joint_friction" value="0.01"/>
+
+    <xacro:property name="front_right_wheel_axis_x" value="0.036417508182449"/>
+    <xacro:property name="front_right_wheel_axis_z" value="0.999336662540598"/>
+    <xacro:property name="front_left_wheel_axis_x" value="0.036417508182449"/>
+    <xacro:property name="front_left_wheel_axis_z" value="-0.999336662540598"/>
+
+    <xacro:property name="mesh_package" value="file://$(find carver_description)/meshes/"/>
+
+</robot>

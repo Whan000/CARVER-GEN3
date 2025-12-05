@@ -1,0 +1,4 @@
+source;share/amt212ev_interfaces/environment/ament_prefix_path.sh
+source;share/amt212ev_interfaces/environment/library_path.sh
+source;share/amt212ev_interfaces/environment/path.sh
+source;share/amt212ev_interfaces/environment/pythonpath.sh

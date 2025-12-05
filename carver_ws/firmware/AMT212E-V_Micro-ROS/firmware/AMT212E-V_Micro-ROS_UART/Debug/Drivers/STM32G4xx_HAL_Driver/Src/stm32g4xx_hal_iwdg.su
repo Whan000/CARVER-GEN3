@@ -1,0 +1,2 @@
+../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_iwdg.c:170:19:HAL_IWDG_Init	24	static
+../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_iwdg.c:257:19:HAL_IWDG_Refresh	16	static

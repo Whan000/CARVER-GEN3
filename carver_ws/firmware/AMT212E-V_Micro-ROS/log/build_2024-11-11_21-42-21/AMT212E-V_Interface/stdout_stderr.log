@@ -1,0 +1,37 @@
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found ament_cmake: 1.3.10 (/opt/ros/humble/share/ament_cmake/cmake)
+-- Found Python3: /usr/local/bin/python3 (found version "3.10.0") found components: Interpreter 
+-- Found ament_lint_auto: 0.12.11 (/opt/ros/humble/share/ament_lint_auto/cmake)
+WARNING: Package name "AMT212E-V_Interface" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+-- Added test 'lint_cmake' to check CMake code style
+-- Added test 'xmllint' to check XML markup files
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/build/AMT212E-V_Interface
+-- Install configuration: ""
+-- Installing: /home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/ament_index/resource_index/package_run_dependencies/AMT212E-V_Interface
+-- Installing: /home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/ament_index/resource_index/parent_prefix_path/AMT212E-V_Interface
+-- Installing: /home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/environment/ament_prefix_path.sh
+-- Installing: /home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/environment/ament_prefix_path.dsv
+-- Installing: /home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/environment/path.sh
+-- Installing: /home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/environment/path.dsv
+-- Installing: /home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/local_setup.bash
+-- Installing: /home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/local_setup.sh
+-- Installing: /home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/local_setup.zsh
+-- Installing: /home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/local_setup.dsv
+-- Installing: /home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/package.dsv
+-- Installing: /home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/ament_index/resource_index/packages/AMT212E-V_Interface
+-- Installing: /home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/cmake/AMT212E-V_InterfaceConfig.cmake
+-- Installing: /home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/cmake/AMT212E-V_InterfaceConfig-version.cmake
+-- Installing: /home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/install/AMT212E-V_Interface/share/AMT212E-V_Interface/package.xml

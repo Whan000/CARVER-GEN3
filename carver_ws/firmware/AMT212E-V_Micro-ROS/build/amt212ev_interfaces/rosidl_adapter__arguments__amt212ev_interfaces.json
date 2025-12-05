@@ -1,0 +1,6 @@
+{
+  "package_name": "amt212ev_interfaces",
+  "non_idl_tuples": [
+    "/home/kireiji/Documents/GitHub/CARVER/AMT212E-V/AMT212E-V/AMT212E-V_Micro-ROS/src/amt212ev_interfaces:msg/AmtRead.msg"
+  ]
+}

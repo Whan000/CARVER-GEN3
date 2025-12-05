@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="base_link_inertial">
+    <inertial>
+      <origin xyz="0.0765717108056987 -0.000305321354473288 0.182746551264274" rpy="0 0 0"/>
+      <mass value="224.620223914356"/>
+      <inertia ixx="11.108875181717" ixy="-0.000143787949337127" ixz="-0.00666553671990701"
+                iyy="35.7202876824402" iyz="-0.00132350955436525" izz="40.7667100665166"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="front_right_steering_inertial">
+    <inertial>
+      <origin xyz="-6.87012402522669E-09 3.51066137271872E-09 -0.0112499999237069" rpy="0 0 0"/>
+      <mass value="0.0307417074716638"/>
+      <inertia ixx="5.15827058483555E-06" ixy="2.87694711205719E-08" ixz="-2.37787643316582E-12"
+                iyy="5.94711293506547E-06" iyz="1.79592218418332E-13" izz="8.17709432093611E-06"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="front_right_wheel_inertial">
+    <inertial>
+      <origin xyz="0.00138386531093282 8.32667268468867E-17 0.0379747931765428" rpy="0 0 0"/>
+      <mass value="5.024500013847"/>
+      <inertia ixx="0.0459745995956163" ixy="8.73502726855944E-19" ixz="0.00152760354434749"
+                iyy="0.0459189311540779" iyz="2.21482778889901E-18" izz="0.0878380602731089"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="front_left_steering_inertial">
+    <inertial>
+      <origin xyz="7.10743075504894E-09 -3.0012958229797E-09 -0.0112499999237069" rpy="0 0 0"/>
+      <mass value="0.0307417074716638"/>
+      <inertia ixx="5.15827283476504E-06" ixy="-2.88003004005144E-08" ixz="2.38464111309773E-12"
+                iyy="5.94711068513598E-06" iyz="-6.03807311086712E-15" izz="8.17709432093612E-06"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="front_left_wheel_inertial">
+    <inertial>
+      <origin xyz="0.00138386531093293 1.38777878078145E-16 -0.0379747931765427" rpy="0 0 0"/>
+      <mass value="5.02450001384701"/>
+      <inertia ixx="0.0459745995956163" ixy="4.79764755280667E-19" ixz="-0.00152760354434749"
+                iyy="0.0459189311540779" iyz="-2.40802616071845E-18" izz="0.0878380602731089"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="rear_right_wheel_inertial">
+    <inertial>
+      <origin xyz="-1.11022302462516E-16 -8.32667268468867E-17 0.0379999999999999" rpy="0 0 0"/>
+      <mass value="5.024500013847"/>
+      <inertia ixx="0.0459189311540779" ixy="-1.56634920793041E-17" ixz="1.5500519296842E-19"
+                iyy="0.045918931154078" iyz="2.98988825793E-19" izz="0.0878937287146473"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="rear_left_wheel_inertial">
+    <inertial>
+      <origin xyz="-1.11022302462516E-16 -5.55111512312578E-17 -0.038" rpy="0 0 0"/>
+      <mass value="5.024500013847"/>
+      <inertia ixx="0.0459189311540779" ixy="-1.69253786030664E-17" ixz="-3.82127958527989E-20"
+                iyy="0.0459189311540779" iyz="-3.5370156940672E-19" izz="0.0878937287146472"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="c16_inertial">
+    <inertial>
+      <origin xyz="-0.00088474978448877 1.07190642272392E-07 0.00143612694647577" rpy="0 0 0"/>
+      <mass value="0.663324628749119"/>
+      <inertia ixx="0.000791421263365419" ixy="1.38226469561758E-09" ixz="-5.15681751766988E-06"
+                iyy="0.000800507843146539" iyz="1.51968163395454E-09" izz="0.000866550903215115"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="t265_inertial">
+    <inertial>
+      <origin xyz="-0.00700393876079974 -0.00123869269728641 -9.55081819808967E-06" rpy="0 0 0"/>
+      <mass value="0.015352262982903"/>
+      <inertia ixx="1.39361946583924E-05" ixy="1.34672770579493E-08" ixz="1.90513550223783E-09"
+                iyy="9.41413823478598E-07" iyz="4.36675000350756E-09" izz="1.32399745397941E-05"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="l515_inertial">
+    <inertial>
+      <origin xyz="-0.0138329335160927 0.000212766276144195 -0.0151333320328252" rpy="0 0 0"/>
+      <mass value="0.0519003008833496"/>
+      <inertia ixx="2.29233885806633E-05" ixy="-3.43966785553731E-08" ixz="-9.60811102903896E-09"
+                iyy="1.23501086319306E-05" iyz="1.73643710033919E-07" izz="1.35094237257254E-05"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="ld_sick_inertial">
+    <inertial>
+      <origin xyz="-0.0476495449150161 3.70691349494235E-07 -4.44702155644183E-06" rpy="0 0 0"/>
+      <mass value="0.911976961838322"/>
+      <inertia ixx="0.00155787250018401" ixy="-1.82431705564109E-09" ixz="2.07922879380138E-08"
+                iyy="0.0012763862501827" iyz="-1.43394136883926E-08" izz="0.00165040465761084"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="rplidar_lb_inertial">
+    <inertial>
+      <origin xyz="-0.000213861534750115 -9.30543889128277E-05 -0.0160849090284972" rpy="0 0 0"/>
+      <mass value="0.0328083847884842"/>
+      <inertia ixx="1.08465576772131E-05" ixy="-2.43583766177749E-09" ixz="1.62330710182403E-08"
+                iyy="1.07881861028149E-05" iyz="-4.20828622810503E-09" izz="1.96376022023911E-05"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="imu_r_inertial">
+    <inertial>
+      <origin xyz="0.000436358638984391 8.66736194223838E-05 -0.0010632487544171" rpy="0 0 0"/>
+      <mass value="0.000983130183652042"/>
+      <inertia ixx="2.7278081479223E-08" ixy="-1.86463715352951E-11" ixz="-1.83135757569472E-11"
+                iyy="4.80453464098755E-08" iyz="1.81575171892503E-12" izz="7.48563776021962E-08"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="imu_l_inertial">
+    <inertial>
+      <origin xyz="0.000436358638983645 8.6673619412142E-05 -0.0010632487544171" rpy="0 0 0"/>
+      <mass value="0.000983130183652038"/>
+      <inertia ixx="2.7278081479223E-08" ixy="-1.86463715354835E-11" ixz="-1.83135757570018E-11"
+                iyy="4.80453464098757E-08" iyz="1.8157517189233E-12" izz="7.48563776021965E-08"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="rplidar_rf_inertial">
+    <inertial>
+      <origin xyz="-0.000213861585845465 -9.30543355081581E-05 -0.0160849091652615" rpy="0 0 0"/>
+      <mass value="0.0328083843446528"/>
+      <inertia ixx="1.0846557670466E-05" ixy="-2.43584017901228E-09" ixz="1.62330727639126E-08"
+                iyy="1.07881860979038E-05" iyz="-4.20828723807052E-09" izz="1.96376022018237E-05"/>
+    </inertial>
+  </xacro:macro>
+
+</robot>
