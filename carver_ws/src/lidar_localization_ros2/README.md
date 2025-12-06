@@ -14,7 +14,7 @@ Green: path, Red: map
 - input  
 /cloud  (sensor_msgs/PointCloud2)  
 /map  (sensor_msgs/PointCloud2)  
-/initialpose (geometry_msgs/PoseStamed)(when `set_initial_pose` is false)  
+/initialpose (geometry_msgs/PoseStamped)(when `set_initial_pose` is false)
 /odom (nav_msgs/Odometry)(optional)   
 /imu  (sensor_msgs/Imu)(optional)  
 
@@ -31,12 +31,12 @@ Green: path, Red: map
 |score_threshold|double|2.0|registration score threshold|
 |ndt_resolution|double|2.0|resolution size of voxels[m]|
 |ndt_step_size|double|0.1|step_size maximum step length[m]|
-|ndt_num_threads|int|0|threads using NDT_OMP(if `0` is set, maximum alloawble threads are used.)|
+|ndt_num_threads|int|0|threads using NDT_OMP(if `0` is set, maximum allowable threads are used.)|
 |transform_epsilon|double|0.01|transform epsilon to stop iteration in registration|
 |voxel_leaf_size|double|0.2|down sample size of input cloud[m]|
 |scan_max_range|double|100.0|max range of input cloud[m]|
 |scan_min_range|double|1.0|min range of input cloud[m]|
-|scan_periad|double|0.1|scan period of input cloud[sec]|
+|scan_period|double|0.1|scan period of input cloud[sec]|
 |use_pcd_map|bool|false|whether pcd_map is used or not|
 |map_path|string|"/map/map.pcd"|pcd_map file path|
 |set_initial_pose|bool|false|whether or not to set the default value in the param file|

@@ -1126,7 +1126,7 @@ colcon build
 
 **Livox MID360 Guidelines:**
 - **https://github.com/Whan000/Livox-MID360**
-- Installation, setup, parameter
+- Installation, setup, parameters
 
 ### Official Documentation
 
@@ -1146,7 +1146,7 @@ colcon build
 
 ## Contributors
 
-This project exists thanks to all the people who contribute
+This project exists thanks to all the people who contributed.
 
 <a href="https://github.com/Whan000/CARVER-GEN3/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=Whan000/CARVER-GEN3" />
