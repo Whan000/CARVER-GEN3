@@ -28,10 +28,10 @@ class Stanley(Node):
         )
         self.create_service(SetBool, "/auto/enable", self.bool_service_callback)
 
-        self.declare_parameter("k_heading", 0.2) #0.1
-        self.declare_parameter("k_crosstrack", 0.1) #0.15
-        self.declare_parameter("ks_gain", 0.5)
-        self.declare_parameter("target_speed", 1.00)
+        self.declare_parameter("k_heading", 0.25)
+        self.declare_parameter("k_crosstrack", 0.1)
+        self.declare_parameter("ks_gain", 0.1)
+        self.declare_parameter("target_speed", 1.25)
         self.declare_parameter("max_steer", 0.6)
         self.declare_parameter("steering_sign", 1.0)
         self.declare_parameter("L_front_axle", 0.5)  # Front axle offset
@@ -302,7 +302,7 @@ class Stanley(Node):
         # Stanley control law
         speed = max(self.current_speed, 0.3)
         heading_term = heading_err  # No gain needed, it's already the error
-        crosstrack_term = math.atan2(self.k_crosstrack * cte, speed)
+        crosstrack_term = math.atan2(self.k_crosstrack * cte, self.ks + speed)
         
         steer = heading_term + crosstrack_term
         steer = np.clip(steer, -self.max_steer, self.max_steer)

@@ -782,7 +782,6 @@ The **Stanley Controller** uses a non-linear control law to keep the vehicle's f
 Subscribed:
 
   - `/state_estimator/pose` (nav\_msgs/Odometry)
-  - `/imu` (sensor\_msgs/Imu)
 
 Published:
 
@@ -798,7 +797,6 @@ k_crosstrack: 0.1        # Cross-track error gain (k)
 ks_gain: 0.1             # Velocity softening factor (k_s, for denominator)
 target_speed: 1.25       # m/s
 max_steer: 0.6           # rad (~34°)
-lookahead_distance: 5.0  # m (Note: Stanley uses *closest point* for CTE, not lookahead distance)
 ```
 
 **Steering Law:**
@@ -840,7 +838,6 @@ The **Pure Pursuit Controller** uses geometric control based on driving the vehi
 Subscribed:
 
   - `/state_estimator/pose` (nav\_msgs/Odometry)
-  - `/imu` (sensor\_msgs/Imu)
 
 Published:
 

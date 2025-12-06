@@ -25,7 +25,7 @@ class PurePursuitController(Node):
         # Declare parameters
         self.declare_parameter('wheelbase', 0.8)  # Distance between front and rear axles (m)
         self.declare_parameter('max_steering_angle', 0.6)  # ~30 degrees in radians
-        self.declare_parameter('min_lookahead', 2.0)  # Minimum look-ahead distance (m) 3.0
+        self.declare_parameter('min_lookahead', 3.0)  # Minimum look-ahead distance (m)
         self.declare_parameter('max_lookahead', 5.0)  # Maximum look-ahead distance (m) 5.0
         self.declare_parameter('lookahead_gain', 1.0)  # Gain for dynamic look-ahead
         self.declare_parameter('target_speed', 1.00)  # Target speed (m/s)
