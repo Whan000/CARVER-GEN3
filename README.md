@@ -672,25 +672,25 @@ The **Combined Controller** dynamically blends the outputs of the Pure Pursuit (
 
 2.  **Normalize Curvature ($\gamma_{\text{norm}}$):** $\gamma$ is normalized relative to a minimum turning radius constraint ($\gamma_{\text{norm}}$).
 
-    $$
-    \gamma_{\text{norm}} = 2 \cdot \arcsin\left(\frac{d}{2 \cdot R_{\min}}\right)
-    $$
+$$
+\gamma_{\text{norm}} = 2 \cdot \arcsin\left(\frac{d}{2 \cdot R_{\min}}\right)
+$$
 
 3.  **Calculate Weight Factors ($\mathbf{k_{PP}}, \mathbf{k_{ST}}$):** The weighting factors depend on the normalized curvature, varying between $K_{\min}$ (for straight sections) and $K_{\max}$ (for sharp turns).
 
-    $$
-    k_{PP} = K_{\min} + \left(\frac{\gamma}{\gamma_{\text{norm}}}\right) \cdot (K_{\max} - K_{\min})
-    $$
+$$
+k_{PP} = K_{\min} + \left(\frac{\gamma}{\gamma_{\text{norm}}}\right) \cdot (K_{\max} - K_{\min})
+$$
 
-    $$
-    k_{ST} = 1 - k_{PP}
-    $$
+$$
+k_{ST} = 1 - k_{PP}
+$$
 
 4.  **Combine Outputs:** The final steering command ($\delta$) is a weighted average.
 
-    $$
-    \delta = k_{PP} \cdot \delta_{PP} + k_{ST} \cdot \delta_{ST}
-    $$
+$$
+\delta = k_{PP} \cdot \delta_{PP} + k_{ST} \cdot \delta_{ST}
+$$
 
 **Control Law:**
 
