@@ -50,7 +50,7 @@ class CombinedController(Node):
         self.declare_parameter("lookahead_gain_k1", 0.1) # Pure Pursuit Gain k_l [cite: 165, 138, 120]
         self.declare_parameter(
             "path_file",
-            os.path.expanduser("/home/katana/Desktop/array/carver_ws/src/carver_controller/path/trajectory1000.yaml"),
+            os.path.expanduser("~/carver_ws/src/carver_controller/path/trajectory1000.yaml"),
         )
         
         # --- Parameter Retrieval ---
@@ -448,7 +448,7 @@ class CombinedController(Node):
     def control_loop(self):
         # STEP 1: Check if pose data has been received first
         if self.current_pose is None:
-            self.get_logger().warn("⚠️  NOT PUBLISHING - Waiting for pose data from /state_estimator/pose", throttle_duration_sec=2.0)
+            self.get_logger().warn("Waiting for pose data from /state_estimator/pose", throttle_duration_sec=2.0)
             return
         
         # STEP 2: Check if controller is enabled and waypoints are loaded
@@ -457,7 +457,7 @@ class CombinedController(Node):
             return
             
         if len(self.waypoints) == 0:
-            self.get_logger().warn("⚠️  NOT PUBLISHING - No waypoints loaded!", throttle_duration_sec=2.0)
+            self.get_logger().warn("No waypoints loaded!", throttle_duration_sec=2.0)
             return
         
         self.get_logger().info("=== Control Loop Active ===", throttle_duration_sec=1.0)

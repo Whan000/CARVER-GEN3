@@ -37,7 +37,7 @@ class Stanley(Node):
         self.declare_parameter("L_front_axle", 0.5)  # Front axle offset
         self.declare_parameter(
             "path_file",
-            "/home/katana/Desktop/array/carver_ws/src/carver_controller/path/trajectory1000.yaml",
+            "~/carver_ws/src/carver_controller/path/trajectory1000.yaml",
         )
 
         self.k_heading = self.get_parameter("k_heading").value
@@ -317,7 +317,9 @@ class Stanley(Node):
     def control_loop(self):
         # if not self.controller_enabled:
         #     return
-        
+        if self.current_pose is None:
+            self.get_logger().warn('Waiting for initial pose data on /state_estimator/pose...', throttle_duration_sec=1.0)
+            return
         final_dist = np.linalg.norm(self.current_pose - self.waypoints[-1, :2])
         if final_dist < 1.0:
             self.publish_commands(0.0, 0.0)

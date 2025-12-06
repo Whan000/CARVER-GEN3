@@ -28,7 +28,6 @@ ament_python_install_package(${PROJECT_NAME})
 # Install Python executables
 install(PROGRAMS
   scripts/dummy_script.py
-  scripts/carver_mpc.py
   scripts/carver_purepursuit.py
   scripts/carver_stanley.py
   scripts/carver_combined.py

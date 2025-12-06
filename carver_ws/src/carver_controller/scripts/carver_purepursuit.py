@@ -30,7 +30,7 @@ class PurePursuitController(Node):
         self.declare_parameter('lookahead_gain', 1.0)  # Gain for dynamic look-ahead
         self.declare_parameter('target_speed', 1.00)  # Target speed (m/s)
         self.declare_parameter('max_speed', 1.00)  # Maximum speed (m/s)
-        self.declare_parameter('waypoint_file', os.path.expanduser('/home/katana/Desktop/array/carver_ws/src/carver_controller/path/trajectory1000.yaml'))
+        self.declare_parameter('waypoint_file', os.path.expanduser('~/carver_ws/src/carver_controller/path/trajectory1000.yaml'))
         
         # Get parameters
         self.wheelbase = self.get_parameter('wheelbase').value
