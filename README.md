@@ -72,25 +72,99 @@ CARVER-GEN3 is an autonomous mobile robot platform with rear-wheel drive, Ackerm
 
 ## 2. System Architecture
 
-![System Architecture](media/System_Architecture.png)
+![System Architecture](media/System%20Architecture.png)
 
-### ROS2 Nodes
+### System Overview
+
+The Carver system consists of three main subsystems: **Perception & Localization**, **Decision & Control**, and **Hardware Interface (Micro-ROS)**. The system uses pre-planned paths with MOLA-SLAM for localization, enabling autonomous path following.
+
+---
+
+### 1. Hardware Interface Layer (Micro-ROS Agent)
+
+The `micro_ros_agent` bridges three STM32 microcontrollers to ROS2:
+
+- `bno055_publisher` - Reads BNO055 IMU data from STM32
+  - Publishes: `/bno055_data` (Float64MultiArray)
+
+- `carver_steering` - Controls steering servo, reads AMT212 encoder feedback
+  - Subscribes: `/steering_angle` (Float32)
+  - Publishes: `/amt_publisher` (amt_read)
+
+- `carver_interface` - Handles accelerator input, emergency button, and lighting control
+  - Subscribes: `/light_signal_command` (Int8)
+  - Publishes: `/accl_publisher` (UInt16), `/carver_emergency` (Bool), `/accel_direction` (Int8), `/carver_mode` (Int8)
+
+---
+
+### 2. Perception & Localization
 
 **Sensors:**
-- `livox_lidar` - Raw Point cloud data
-- `imu` - IMU data converter  
-- `micro_ros_agent` (3 instances) - STM32 ↔ ROS2 bridge
+- `carver_livox_lidar.launch.py` - Launches Livox 3D LiDAR
+  - Publishes: `/livox/lidar` (PointCloud2), `/livox/imu` (Imu)
 
-**State Estimation:**
-- `robot_state_publisher` - TF tree
-- `MOLA-SLAM` - Smooth State Estimator Pose
-- `FAST-LIO` - SLAM (for mapping)
+- `bno055_imu.py` - Processes raw IMU data from STM32
+  - Subscribes: `/bno055_data`
+  - Publishes: `/imu` (sensor_msgs/Imu)
 
-**Control:**
-- `Carver_mode_node` - Mode manager
-- `Carver_manual_steering` - Manual control
-- `carver_stanley` or `carver_purepursuit` or `carver_combined` - Path tracking
-- `Carver_odrive_node` - Motor controller interface
+**Localization:**
+- `MOLA_lidar_localization` - 3D LiDAR-based localization using pre-built maps
+  - Subscribes: `/livox/lidar`, `/imu`
+  - Publishes: `/state_estimator/pose` (nav_msgs/Odometry)
+  - Requires: `map.simplemap` + `map.mm` (pre-built map files)
+
+---
+
+### 3. Decision & Control Layer
+
+**Mode Management:**
+- `carver_mode.py` - Switches modes
+  - Subscribes: `/controller_speed`, `/manual_speed`
+  - Publishes: `/target_speed`, `/carver_mode`
+
+**Path Tracking Controllers:**
+- `carver_controller.py` - Implements Stanley / Pure Pursuit / Combined controller
+  - Subscribes: `/state_estimator/pose`
+  - Publishes: `/controller_speed`, `/steering_angle`
+  - Requires: `path.yaml` (pre-planned waypoints)
+
+**Manual Control:**
+- `carver_manual_steering.py` - Manual joystick/handle control
+  - Subscribes: `/accel_direction`, `/accl_publisher`
+  - Publishes: `/manual_speed`
+
+**Motor Control:**
+- `carver_odrive.py` - Interfaces with ODrive motor controller
+  - Subscribes: `/target_speed`
+  - Outputs: Velocity setpoint to ODrive (with velocity feedback)
+
+---
+
+### Operational Sequence
+
+**Phase 1: Mapping (Offline)**
+1. Drive the vehicle manually while recording LiDAR/IMU data
+2. Build `map.simplemap` and `map.mm` using MOLA offline tools
+3. Define waypoints and save as `path.yaml`
+
+**Phase 2: Localization (Runtime)**
+1. Livox LiDAR publishes point cloud to `/livox/lidar`
+2. BNO055 IMU data flows: STM32 → micro_ros → `bno055_imu.py` → `/imu`
+3. MOLA localizes against pre-built map, publishes pose to `/state_estimator/pose`
+
+**Phase 3: Path Following (Runtime)**
+1. Controller loads waypoints from `path.yaml`
+2. Controller receives current pose from `/state_estimator/pose`
+3. Stanley/Pure Pursuit algorithm computes:
+   - Steering angle → `/steering_angle` → STM32 → Servo
+   - Target speed → `/controller_speed` → `carver_mode` → `/target_speed` → ODrive
+
+**Phase 4: Actuation**
+1. `carver_steering` (STM32) receives steering command, controls servo via PWM
+2. AMT212 encoder provides steering angle feedback
+3. `carver_odrive` sends velocity setpoint to ODrive S1 Pro
+4. ODrive returns velocity feedback for closed-loop control
+
 
 ---
 
@@ -276,7 +350,7 @@ System startup launch files.
 **Launch Files:**
 - `bringup.launch.py` - Full system startup
 - `manual_steering.launch.py` - Manual control only
-- `slam.launch.py` - SLAM/mapping mode (see [MOLA-SLAM](https://github.com/Whan000/MOLA-SLAM) for details)
+- `slam.launch.py` - SLAM / mapping mode (see [MOLA-SLAM](https://github.com/Whan000/MOLA-SLAM) for details)
 - `uros.launch.py` - Micro-ROS agents only
 
 **Usage:**
@@ -289,13 +363,12 @@ ros2 launch carver_bringup bringup.launch.py
 Path tracking controllers.
 
 **Controllers:**
-- `carver_stanley.py` - Stanley controller (recommended)
-- `carver_purepursuit.py` - Pure Pursuit controller
-- `carver_combined.py` - Adaptive combined controller
+- `carver_stanley.py` - Stanley Controller
+- `carver_purepursuit.py` - Pure Pursuit Controller
+- `carver_combined.py` - Adaptive Combined Controller
 
 **Trajectory Files:**
-- `path/trajectory.yaml` - 200 path sampling points
-- `path/trajectory750.yaml` - 750 path sampling points
+- `path/trajectory200.yaml` - 200 path sampling points
 - `path/trajectory1000.yaml` - 1000 path sampling points
 
 ### 5.4 carver_odrive
@@ -312,13 +385,7 @@ Mode management and manual control.
 
 **Scripts:**
 - `carver_mode.py` - Mode switching
-- `carver_manual_steering.py` - Keyboard control
-
-**Manual Control Keys:**
-- W/S: Forward/backward
-- A/D: Steer left/right
-- Space: Emergency stop
-- ESC: Exit
+- `carver_manual_steering.py` - Manual control
 
 ### 5.6 carver_simulation
 
@@ -591,7 +658,6 @@ Where:
 **Best for:**
 
   * Preplanned trajectories
-  * Medium to high speeds
   * Racing or time trials
 
 -----
@@ -657,7 +723,6 @@ $$
 **Best for:**
 
   - Smooth curved paths
-  - Low to medium speeds
   - Initial testing
 
 -----
