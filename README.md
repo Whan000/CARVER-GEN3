@@ -18,14 +18,16 @@
 
 CARVER-GEN3 is an autonomous mobile robot platform with rear-wheel drive, Ackermann steering, and LiDAR-based navigation. Built on ROS2 Humble for research in autonomous navigation, SLAM, and path tracking control.
 
-**GitHub Repository:** **https://github.com/Whan000/CARVER-GEN3**
-
-**MOLA SLAM Configuration:** For complete MOLA setup, mapping procedures, and parameters, see the dedicated **[MOLA-SLAM Repository](https://github.com/Whan000/MOLA-SLAM)**
-
 **Version:** 3.0  
 **ROS2 Distribution:** Humble  
 **Operating System:** Ubuntu 22.04 LTS  
 **License:** MIT  
+
+<p align="center">
+  <a href="media/demo.mp4">
+    <img src="media/demo.webp" alt="Demo Video">
+  </a>
+</p>
 
 ---
 
@@ -36,7 +38,7 @@ CARVER-GEN3 is an autonomous mobile robot platform with rear-wheel drive, Ackerm
 3. [Hardware Requirements](#3-hardware-requirements)
 4. [Installation](#4-installation)
 5. [Package Descriptions](#5-package-descriptions)
-6. [Hardware Connections](#6-hardware-connections)
+6. [Additional Hardware Connections](#6-additional-hardware-connections)
 7. [Configuration](#7-configuration)
 8. [Quick Start Guide](#8-quick-start-guide)
 9. [Path Tracking Controllers](#9-path-tracking-controllers)
@@ -49,7 +51,7 @@ CARVER-GEN3 is an autonomous mobile robot platform with rear-wheel drive, Ackerm
 ## 1. Key Features
 
 ### Hardware
-- **Drive System:** Rear-wheel drive (2 motors via ODrive controllers)
+- **Drive System:** Rear-wheel drive (Using ODrive controllers)
 - **Steering:** Front Ackermann steering with absolute encoders
 - **Sensing:** Livox MID360 LiDAR, BNO055 IMU, AMT212EV encoders
 - **Control:** 3× STM32G474RE microcontrollers running Micro-ROS
@@ -61,41 +63,16 @@ CARVER-GEN3 is an autonomous mobile robot platform with rear-wheel drive, Ackerm
 - **Real-time Control:** 10 Hz control loop, 10 Hz localization
 
 ### Specifications
-- **Wheelbase:** 0.8m (configurable)
+- **Wheelbase:** 0.8m
 - **Max Speed:** 3.5 m/s
 - **Steering Range:** ±0.6 rad (±34°)
-- **Localization Accuracy:** <0.02m (when tuned)
+- **Localization Accuracy:** <0.02m
 
 ---
 
 ## 2. System Architecture
 
-![System Architecture](System_Architecture.png)
-
-
-### Component Overview
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Application Layer                        │
-│              (Path Tracking, Manual Control)                │
-└──────────────────────┬──────────────────────────────────────┘
-                       │
-┌──────────────────────┴──────────────────────────────────────┐
-│                    Perception Layer                         │
-│          (MOLA SLAM, Fast-LIO, Rsasaki)                     │
-└──────────────────────┬──────────────────────────────────────┘
-                       │
-┌──────────────────────┴──────────────────────────────────────┐
-│                Robot Abstraction Layer                      │
-│         (URDF, TF Tree, Joint States)                       │
-└──────────────────────┬──────────────────────────────────────┘
-                       │
-┌──────────────────────┴──────────────────────────────────────┐
-│                   Hardware Layer                            │
-│        (Micro-ROS, LiDAR, ODrive, Encoders, IMU)            │
-└─────────────────────────────────────────────────────────────┘
-```
+![System Architecture](media/System_Architecture.png)
 
 ### ROS2 Nodes
 
@@ -114,21 +91,6 @@ CARVER-GEN3 is an autonomous mobile robot platform with rear-wheel drive, Ackerm
 - `Carver_manual_steering` - Manual control
 - `carver_stanley` or `carver_purepursuit` or `carver_combined` - Path tracking
 - `Carver_odrive_node` - Motor controller interface
-
-### Data Flow
-
-**Sensing → Localization:**
-```
-LiDAR → /livox/lidar → /livox/lidar_filtered → /state_estimator/pose
-IMU → Micro-ROS → /bno055_data → /imu → Controllers
-Encoders → Micro-ROS → /encoder_*/data → Feedback
-```
-
-**Control → Actuation:**
-```
-Path → Controller → /steering_angle + /target_speed → ODrive → Motors
-```
-
 
 ---
 
@@ -158,7 +120,7 @@ Path → Controller → /steering_angle + /target_speed → ODrive → Motors
 - Hardware FPU, USB 2.0
 - Running Micro-ROS firmware
 
-**Unit 1:** Encoder interface (AMT212EV × 1)
+**Unit 1:** Encoder interface (AMT212EV)
 **Unit 2:** Steering control  
 **Unit 3:** BNO055 IMU interface
 
@@ -176,21 +138,20 @@ Path → Controller → /steering_angle + /target_speed → ODrive → Motors
 - Connection: I2C to STM32
 - Power: 3.3V or 5V
 
-**AMT212EV Absolute Encoders (1×):**
+**AMT212EV Absolute Encoders:**
 - 12-bit resolution (4096 positions/rev)
 - Interface: SPI
 - Power: 5V DC
 
 ### Actuators
 
-**ODrive v3.6 Motor Controllers (2×):**
-- Each controls one rear drive wheel
+**ODrive v3.6 Motor Controllers:**
 - Connection: USB 2.0
 - Power: 24V DC
 - Hall sensor feedback
 
 **Motors:**
-- 2× Brushless DC motors (rear wheels)
+- Brushless DC motors (rear wheels)
 - Built-in Hall sensors
 - Direct drive
 
@@ -203,123 +164,76 @@ Path → Controller → /steering_angle + /target_speed → ODrive → Motors
 
 ## 4. Installation
 
-### System Preparation
+### Prerequisites
 
-**1. Verify Ubuntu 22.04:**
+- **Ubuntu 22.04 LTS**
+- **ROS2 Humble** ([Installation Guide](https://docs.ros.org/en/humble/Installation.html))
+- **rosdep initialized** 
 ```bash
-lsb_release -a
-# Should show: Ubuntu 22.04.x LTS
+sudo rosdep init && rosdep update
 ```
 
-**2. Update System:**
+### Clone Repository
 ```bash
-sudo apt update && sudo apt upgrade -y
-```
-
-**3. Install ROS2 Humble:**
-```bash
-# Add ROS2 repository
-sudo apt install software-properties-common
-sudo add-apt-repository universe
-sudo apt update && sudo apt install curl -y
-
-sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key \
-  -o /usr/share/keyrings/ros-archive-keyring.gpg
-
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] \
-  http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | \
-  sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
-
-sudo apt update
-sudo apt install ros-humble-desktop -y
-```
-
-**4. Configure Environment:**
-```bash
-echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
-source ~/.bashrc
-```
-
-**5. Initialize rosdep:**
-```bash
-sudo apt install python3-rosdep
-sudo rosdep init
-rosdep update
+git clone https://github.com/Whan000/CARVER-GEN3.git
+cd CARVER-GEN3/carver_ws
 ```
 
 ### Install Dependencies
-
-**Core ROS2 Packages:**
 ```bash
-sudo apt install \
-  ros-humble-robot-state-publisher \
-  ros-humble-joint-state-publisher \
-  ros-humble-xacro \
-  ros-humble-ros2-control \
-  ros-humble-ros2-controllers \
-  ros-humble-gazebo-ros-pkgs \
-  ros-humble-gazebo-ros2-control \
-  ros-humble-navigation2 \
-  ros-humble-nav2-bringup \
-  ros-humble-tf2-tools
-```
+# Point Cloud Library
+sudo apt install libpcl-dev ros-humble-pcl-ros ros-humble-pcl-conversions pcl-tools
 
-**Point Cloud Library:**
-```bash
-sudo apt install \
-  libpcl-dev \
-  ros-humble-pcl-ros \
-  ros-humble-pcl-conversions \
-  pcl-tools
-```
+# Python dependencies
+pip3 install numpy scipy matplotlib transforms3d pyserial pyyaml odrive
 
-**Micro-ROS:**
-```bash
-sudo apt install ros-humble-micro-ros-agent
-```
+# Clone Livox driver into src/
+git clone https://github.com/Livox-SDK/livox_ros_driver2.git src/livox_ros_driver2
 
-**Python Dependencies:**
-```bash
-pip3 install \
-  numpy scipy matplotlib \
-  transforms3d \
-  pyserial \
-  pyyaml \
-  odrive
-```
-
-### Build Workspace
-
-**1. Clone Repository:**
-```bash
-git clone https://github.com/Whan000/CARVER-GEN3.git
-```
-
-**3. Clone Additional Dependencies:**
-```bash
-# Livox ROS2 driver
-git clone https://github.com/Livox-SDK/livox_ros_driver2.git
-
-# MOLA SLAM (for mapping)
-# See complete MOLA setup guide: https://github.com/Whan000/MOLA-SLAM
-# Follow installation instructions there
-```
-
-**4. Install Dependencies:**
-```bash
-cd ~/CARVER-GEN3/carver_ws
+# Install ROS dependencies via rosdep
 rosdep install --from-paths src --ignore-src -r -y
-```
 
-**5. Build:**
-```bash
-cd ~/CARVER-GEN3/carver_ws
+# Build
 colcon build
 source install/setup.bash
 echo "source ~/CARVER-GEN3/carver_ws/install/setup.bash" >> ~/.bashrc
 ```
 
-**6. Verify Installation:**
+### Micro-ROS Setup
+```bash
+mkdir -p ~/microros_ws/src
+cd ~/microros_ws
+git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup
+sudo apt update && rosdep update
+rosdep install --from-paths src --ignore-src -y
+colcon build
+source install/local_setup.bash
+
+# Build firmware and agent
+ros2 run micro_ros_setup create_firmware_ws.sh host
+ros2 run micro_ros_setup build_firmware.sh
+source install/local_setup.bash
+ros2 run micro_ros_setup create_agent_ws.sh
+ros2 run micro_ros_setup build_agent.sh
+source install/local_setup.bash
+```
+
+> **STM32/Nucleo Setup:** See [Micro-ROS with Nucleo Board](https://github.com/pboon09/Micro-ROS-with-Nucleo-board) for firmware flashing and configuration.
+
+### Device Permissions
+```bash
+# Add user to dialout group
+sudo usermod -a -G dialout $USER
+
+# ODrive udev rules
+echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="1209", ATTR{idProduct}=="0d32", MODE="0666"' | \
+  sudo tee /etc/udev/rules.d/91-odrive.rules
+
+sudo udevadm control --reload-rules && sudo udevadm trigger
+# Logout/login required
+```
+
+### Verify Installation
 ```bash
 ros2 pkg list
 ```
@@ -335,23 +249,6 @@ Expected packages:
 - carver_simulation
 - lidar_localization_ros2
 - ndt_omp_ros2
-
-### Device Permissions
-
-```bash
-# Add user to dialout group
-sudo usermod -a -G dialout $USER
-
-# Create udev rules for ODrive
-echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="1209", ATTR{idProduct}=="0d32", MODE="0666"' | \
-  sudo tee /etc/udev/rules.d/91-odrive.rules
-
-# Reload udev
-sudo udevadm control --reload-rules
-sudo udevadm trigger
-
-# Logout and login for changes to take effect
-```
 
 ---
 
@@ -451,100 +348,7 @@ OpenMP-accelerated NDT library.
 
 ---
 
-## 6. Hardware Connections
-
-
-### ODrive Connections (Rear Wheels)
-
-⚠️ **USB Serial Port Numbers Can Change!**
-
-Device names `/dev/ttyACM*` may change between boots. Create udev rules for persistent names (see Section 6.4).
-
-**ODrive 1 - Left Rear Wheel:**
-```
-M0 (Axis 0):
-  Phase A, B, C → Motor phases
-  Hall A, B, C → Hall sensors
-  Hall 5V, GND
-
-Power:
-  VCC → 24V (+) via fuse
-  GND → Battery (-)
-
-USB → Computer
-```
-
-**ODrive 2 - Right Rear Wheel:**
-```
-M0 (Axis 0):
-  Phase A, B, C → Motor phases
-  Hall A, B, C → Hall sensors
-  Hall 5V, GND
-
-Power:
-  VCC → 24V (+) via fuse
-  GND → Battery (-)
-
-USB → Computer
-```
-
-### STM32G474RE Units
-
-**Unit 1: Encoder Interface** (`/dev/carver_interface`)
-
-```
-Power: 5V, GND
-
-SPI1 - Front Left Encoder:
-  PA5  → SCK
-  PA6  → MISO
-  PA4  → CS
-
-SPI2 - Front Right Encoder:
-  PB13 → SCK
-  PB14 → MISO
-  PB12 → CS
-
-SPI3 - Rear Left Encoder:
-  PC10 → SCK
-  PC11 → MISO
-  PA15 → CS
-
-GPIO - Rear Right Encoder:
-  PB3  → SCK
-  PB4  → MISO
-  PB5  → CS
-
-USB: PA11 (D-), PA12 (D+)
-```
-
-**Unit 2: Steering Control** (`/dev/carver_steering`)
-
-```
-Power: 5V, GND
-
-GPIO:
-  PC0-PC7 → Steering control signals
-  PB0-PB1 → PWM outputs
-
-USB: PA11 (D-), PA12 (D+)
-```
-
-**Unit 3: BNO055 IMU** (`/dev/carver_bno055`)
-
-```
-Power: 5V, GND
-
-I2C1:
-  PB8 → SCL (with 4.7kΩ pullup to 3.3V)
-  PB9 → SDA (with 4.7kΩ pullup to 3.3V)
-
-GPIO (Optional):
-  PC13 → Reset
-  PC14 → Interrupt
-
-USB: PA11 (D-), PA12 (D+)
-```
+## 6. Additional Hardware Connections
 
 ### Livox MID360
 
@@ -684,45 +488,6 @@ wheel_velocity_controller:
 
 ## 8. Quick Start Guide
 
-### System Startup
-
-**1. Power On:**
-```
-1. Release emergency stop
-2. Turn on main power switch
-3. Verify all LEDs illuminate
-```
-
-**2. Start Core System:**
-```bash
-ros2 launch carver_bringup bringup.launch.py
-```
-
-**3. Verify System Status:**
-```bash
-# Check nodes
-ros2 node list
-
-# Check topics
-ros2 topic list
-
-# Monitor sensors
-ros2 topic echo /imu/data --once
-ros2 topic echo /livox/lidar --once
-```
-
-### Manual Control
-
-**Start manual control:**
-```bash
-ros2 run carver_manager carver_manual_steering.py
-```
-
-**Controls:**
-
-Physical Accelerator:
-- Use the robot's onboard accelerator for direct manual control
-
 ### Create Map with MOLA
 
 **MOLA SLAM** is used to create maps for autonomous navigation.
@@ -730,7 +495,7 @@ Physical Accelerator:
 **Complete MOLA configuration and usage guide:**  
 **https://github.com/Whan000/MOLA-SLAM**
 
-**Quick Overview:**
+### Quick Overview:
 
 **1. Start System:**
 ```bash
@@ -977,28 +742,6 @@ waypoints:
 - Advanced features
 
 **See the dedicated MOLA-SLAM repository above.**
-
----
-
-
-### Workflow Summary
-
-**Every Autonomous Run:**
-```bash
-# 1. Start system
-ros2 launch carver_bringup bringup.launch.py
-
-# 2. Start localization with your map
-ros2 launch mola_bringup mola_localize.py
-
-# 3. Set initial pose in GUI
-
-# 4. Start path tracking controller
-ros2 run carver_controller carver_stanley.py
-  
-```
-
-**For MOLA SLAM details, see:** https://github.com/Whan000/MOLA-SLAM
 
 ---
 
