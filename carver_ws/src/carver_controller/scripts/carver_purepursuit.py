@@ -71,7 +71,7 @@ class PurePursuitController(Node):
         self.load_waypoints_from_yaml()
         
         # Timer for control loop
-        self.control_timer = self.create_timer(0.02, self.control_loop)  # 50 Hz
+        self.control_timer = self.create_timer(0.1, self.control_loop)  # 10 Hz
         self.create_timer(1.0, self.publish_path_visualization)
         
         self.get_logger().info('Pure Pursuit Controller initialized')

@@ -12,11 +12,13 @@
   <img src="https://img.shields.io/badge/Steering-Ackermann-lightblue?style=flat-square" alt="Ackermann Steering">
 </p>
 
+
+
 ## Overview
 
 CARVER-GEN3 is an autonomous mobile robot platform with rear-wheel drive, Ackermann steering, and LiDAR-based navigation. Built on ROS2 Humble for research in autonomous navigation, SLAM, and path tracking control.
 
-**GitHub Repository:** https://github.com/Whan000/CARVER-GEN3
+**GitHub Repository:** **https://github.com/Whan000/CARVER-GEN3**
 
 **MOLA SLAM Configuration:** For complete MOLA setup, mapping procedures, and parameters, see the dedicated **[MOLA-SLAM Repository](https://github.com/Whan000/MOLA-SLAM)**
 
@@ -54,15 +56,15 @@ CARVER-GEN3 is an autonomous mobile robot platform with rear-wheel drive, Ackerm
 
 ### Software
 - **SLAM:** MOLA framework for mapping ([Complete MOLA guide here](https://github.com/Whan000/MOLA-SLAM))
-- **Localization:** NDT-OMP point cloud registration  
-- **Controllers:** Stanley and Pure Pursuit path tracking
-- **Real-time Control:** 50 Hz control loop, 10 Hz localization
+- **Localization:** GICP/ICP Cov matching
+- **Controllers:** Stanley, Pure Pursuit and Combined path tracking
+- **Real-time Control:** 10 Hz control loop, 10 Hz localization
 
 ### Specifications
 - **Wheelbase:** 0.8m (configurable)
-- **Max Speed:** 2.5 m/s
+- **Max Speed:** 3.5 m/s
 - **Steering Range:** ±0.6 rad (±34°)
-- **Localization Accuracy:** <0.1m (when tuned)
+- **Localization Accuracy:** <0.02m (when tuned)
 
 ---
 
@@ -81,7 +83,7 @@ CARVER-GEN3 is an autonomous mobile robot platform with rear-wheel drive, Ackerm
                        │
 ┌──────────────────────┴──────────────────────────────────────┐
 │                    Perception Layer                         │
-│          (MOLA SLAM, NDT-OMP Localization)                  │
+│          (MOLA SLAM, Fast-LIO, Rsasaki)                     │
 └──────────────────────┬──────────────────────────────────────┘
                        │
 ┌──────────────────────┴──────────────────────────────────────┐
@@ -98,27 +100,27 @@ CARVER-GEN3 is an autonomous mobile robot platform with rear-wheel drive, Ackerm
 ### ROS2 Nodes
 
 **Sensors:**
-- `/livox_lidar_publisher` - Point cloud data
-- `/bno055_imu` - IMU data converter  
-- `/micro_ros_agent` (3 instances) - STM32 ↔ ROS2 bridge
+- `livox_lidar` - Raw Point cloud data
+- `imu` - IMU data converter  
+- `micro_ros_agent` (3 instances) - STM32 ↔ ROS2 bridge
 
 **State Estimation:**
-- `/robot_state_publisher` - TF tree
-- `/localization_node` - NDT-OMP pose estimation
-- `/fast_lio` - SLAM (for mapping)
+- `robot_state_publisher` - TF tree
+- `MOLA-SLAM` - Smooth State Estimator Pose
+- `FAST-LIO` - SLAM (for mapping)
 
 **Control:**
-- `/carver_mode_node` - Mode manager
-- `/carver_manual_steering` - Manual control
-- `/carver_stanley` or `/carver_purepursuit` - Path tracking
-- `/carver_odrive_node` - Motor controller interface
+- `Carver_mode_node` - Mode manager
+- `Carver_manual_steering` - Manual control
+- `carver_stanley` or `carver_purepursuit` or `carver_combined` - Path tracking
+- `Carver_odrive_node` - Motor controller interface
 
 ### Data Flow
 
 **Sensing → Localization:**
 ```
-LiDAR → /livox/lidar → NDT-OMP → /state_estimator/pose
-IMU → Micro-ROS → /imu/data → Controllers
+LiDAR → /livox/lidar → /livox/lidar_filtered → /state_estimator/pose
+IMU → Micro-ROS → /bno055_data → /imu → Controllers
 Encoders → Micro-ROS → /encoder_*/data → Feedback
 ```
 
@@ -127,19 +129,6 @@ Encoders → Micro-ROS → /encoder_*/data → Feedback
 Path → Controller → /steering_angle + /target_speed → ODrive → Motors
 ```
 
-### Coordinate Frames
-
-```
-map
- └─ odom
-     └─ base_link
-         ├─ lidar_link
-         ├─ imu_link
-         ├─ front_left_wheel
-         ├─ front_right_wheel
-         ├─ rear_left_wheel
-         └─ rear_right_wheel
-```
 
 ---
 
@@ -149,7 +138,7 @@ map
 
 **Minimum Requirements:**
 - CPU: Quad-core x86-64 @ 2.0 GHz
-- RAM: 16 GB DDR4
+- RAM: 16 GB DDR5
 - Storage: 256 GB SSD
 - OS: Ubuntu 22.04 LTS
 - USB: Multiple USB 3.0 ports
@@ -159,7 +148,7 @@ map
 - **CPU:** AMD Ryzen 9 7945HX (16 cores, 32 threads)
 - **GPU:** NVIDIA RTX 4060 (optional, for future vision features)
 - **RAM:** 24 GB DDR5
-- **Storage:** NVMe SSD
+- **Storage:** NVMe SSD 2TB
 
 ### Microcontrollers
 
@@ -169,7 +158,7 @@ map
 - Hardware FPU, USB 2.0
 - Running Micro-ROS firmware
 
-**Unit 1:** Encoder interface (AMT212EV × 4)
+**Unit 1:** Encoder interface (AMT212EV × 1)
 **Unit 2:** Steering control  
 **Unit 3:** BNO055 IMU interface
 
@@ -187,7 +176,7 @@ map
 - Connection: I2C to STM32
 - Power: 3.3V or 5V
 
-**AMT212EV Absolute Encoders (4×):**
+**AMT212EV Absolute Encoders (1×):**
 - 12-bit resolution (4096 positions/rev)
 - Interface: SPI
 - Power: 5V DC
@@ -203,10 +192,10 @@ map
 **Motors:**
 - 2× Brushless DC motors (rear wheels)
 - Built-in Hall sensors
-- Direct drive or geared
+- Direct drive
 
 **Front Steering:**
-- Servo or stepper actuators
+- DC Motor actuated
 - Ackermann geometry linkage
 - AMT212EV encoders for feedback
 
@@ -408,7 +397,7 @@ Path tracking controllers.
 - `carver_combined.py` - Adaptive combined controller
 
 **Trajectory Files:**
-- `path/trajectory.yaml` - 300 path sampling points
+- `path/trajectory.yaml` - 200 path sampling points
 - `path/trajectory750.yaml` - 750 path sampling points
 - `path/trajectory1000.yaml` - 1000 path sampling points
 
@@ -691,26 +680,6 @@ wheel_velocity_controller:
       - base_rear_left_wheel_joint
       - base_rear_right_wheel_joint
 ```
-
-### Localization Parameters
-
-**File:** `lidar_localization_ros2/param/localization.yaml`
-
-```yaml
-pcl_localization:
-  ros__parameters:
-    localization_frequency: 10.0  # Hz
-    ndt_resolution: 1.0           # Voxel size (m)
-    transformation_epsilon: 0.01
-    maximum_iterations: 35
-    voxel_leaf_size: 0.1          # Downsampling
-```
-
-**Tuning guidelines:**
-- Larger `ndt_resolution` = faster, less accurate
-- More `maximum_iterations` = better convergence, slower
-- Smaller `voxel_leaf_size` = more points, slower
-
 ---
 
 ## 8. Quick Start Guide
@@ -751,15 +720,6 @@ ros2 run carver_manager carver_manual_steering.py
 
 **Controls:**
 
-Keyboard:
-
-- **W** - Forward
-- **S** - Backward
-- **A** - Steer left
-- **D** - Steer right
-- **Space** - Emergency stop
-- **ESC** - Exit
-
 Physical Accelerator:
 - Use the robot's onboard accelerator for direct manual control
 
@@ -778,7 +738,7 @@ Physical Accelerator:
 ros2 launch carver_bringup bringup.launch.py
 
 # Terminal 2 - Localization
-ros2 launch mola_bringup mola_localize_launch.py
+ros2 launch mola_bringup mola_slam.py
 ```
 
 **2. Set Initial Pose:**
@@ -805,20 +765,9 @@ default:
 ros2 run carver_controller carver_combined.py
 ```
 
+**4. Emergency Stop:**
 
-**4. Enable Controller:**
-
-Turn on steering cutout switch, or:
-```bash
-ros2 service call /auto/enable std_srvs/srv/SetBool "data: true"
-```
-
-**5. Emergency Stop:**
-
-Press hardware E-stop or:
-```bash
-ros2 service call /auto/enable std_srvs/srv/SetBool "data: false"
-```
+Press hardware E-stop
 
 ---
 
@@ -838,7 +787,7 @@ Subscribed:
 Published:
 
   - `/steering_angle` (std\_msgs/Float32)
-  - `/target_speed` (std\_msgs/Float32)
+  - `/controller_speed` (std\_msgs/Float32)
   - `/path_visualization` (nav\_msgs/Path)
 
 **Parameters:**
@@ -896,7 +845,7 @@ Subscribed:
 Published:
 
   - `/steering_angle` (std\_msgs/Float32)
-  - `/target_speed` (std\_msgs/Float32)
+  - `/controller_speed` (std\_msgs/Float32)
   - `/path_visualization` (nav\_msgs/Path)
 
 **Parameters:**
@@ -1015,7 +964,7 @@ waypoints:
 **Two-Stage Approach:**
 
 1. **SLAM (Mapping):** Use MOLA to create maps
-2. **Localization (Navigation):** Use NDT-OMP for real-time pose estimation → Configured in this package
+2. **Localization (Navigation):** Use ICP/GICP for real-time pose estimation → Configured in MOLA packages
 
 **Complete Documentation:**  
 **https://github.com/Whan000/MOLA-SLAM**
@@ -1040,15 +989,13 @@ waypoints:
 ros2 launch carver_bringup bringup.launch.py
 
 # 2. Start localization with your map
-ros2 launch mola_bringup mola_localize_launch.py
+ros2 launch mola_bringup mola_localize.py
 
 # 3. Set initial pose in GUI
 
 # 4. Start path tracking controller
 ros2 run carver_controller carver_stanley.py
   
-# 5. Enable controller
-ros2 service call /auto/enable std_srvs/srv/SetBool "data: true"
 ```
 
 **For MOLA SLAM details, see:** https://github.com/Whan000/MOLA-SLAM
@@ -1063,6 +1010,8 @@ ros2 service call /auto/enable std_srvs/srv/SetBool "data: true"
 ```bash
 ls -l /dev/ttyACM*
 lsusb | grep ODrive
+
+#Or just go to your browser and type for odriveGUI
 ```
 
 **Test individual components:**
@@ -1080,7 +1029,7 @@ sudo chmod 666 /dev/ttyACM*
 
 **Verify map loaded:**
 ```bash
-ros2 topic echo /map -n 1
+#Check on RViZ2 or MOLA-Viz
 ```
 
 **Check LiDAR data:**
@@ -1130,16 +1079,14 @@ sudo ifconfig eth0 192.168.1.50 netmask 255.255.255.0
 
 **Start driver:**
 ```bash
-ros2 launch livox_ros_driver2 msg_MID360_launch.py
+ros2 launch livox_ros_driver2 rviz_MID360_launch.py
 ```
 
 ### High CPU Usage
 
 **Reduce load:**
 ```yaml
-# In localization.yaml
-voxel_leaf_size: 0.2  # Increase
-localization_frequency: 5  # Decrease
+#Config in MOLA pipelines aim for bigger voxels size
 ```
 
 **Disable visualization:**
@@ -1169,13 +1116,17 @@ colcon build
 ### Project Repositories
 
 **CARVER-GEN3 Main Repository:**
-- https://github.com/Whan000/CARVER-GEN3
+- **https://github.com/Whan000/CARVER-GEN3**
 
 **MOLA SLAM Configuration (Complete Guide):**
 - **https://github.com/Whan000/MOLA-SLAM**
 - Installation, setup, parameters, mapping procedures
 - Tested configuration for Livox MID360
 - Troubleshooting and best practices
+
+**Livox MID360 Guidelines:**
+- **https://github.com/Whan000/Livox-MID360**
+- Installation, setup, parameter
 
 ### Official Documentation
 
@@ -1191,6 +1142,15 @@ colcon build
 - ODrive: https://docs.odriverobotics.com/
 - Livox SDK: https://github.com/Livox-SDK/
 - STM32: https://www.st.com/
+
+
+## Contributors
+
+This project exists thanks to all the people who contribute
+
+<a href="https://github.com/Whan000/CARVER-GEN3/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Whan000/CARVER-GEN3" />
+</a>
 
 ### Academic Papers
 
