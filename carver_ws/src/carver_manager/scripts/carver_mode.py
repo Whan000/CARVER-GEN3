@@ -2,7 +2,7 @@
 
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Int8
+from std_msgs.msg import Int8, Float32
 from std_srvs.srv import SetBool
 
 
@@ -16,13 +16,15 @@ class CarverMode(Node):
         self.MODE_JOYSTICK = 3
         
         self.current_mode = None
+        self.controller_speed = 0.0
+        self.manual_speed = 0.0
     
-        self.mode_sub = self.create_subscription(Int8,'/carver_mode',self.mode_callback,10)
-
-        self.manual_enable_client = self.create_client(SetBool, '/manual/enable')
-        self.teleop_enable_client = self.create_client(SetBool, '/teleop/enable')
-        self.auto_enable_client = self.create_client(SetBool, '/auto/enable')
-        self.joystick_enable_client = self.create_client(SetBool, '/joystick/enable')
+        self.speed_pub = self.create_publisher(Float32, '/target_speed', 10)
+        self.mode_sub = self.create_subscription(Int8,'/carver_mode', self.mode_callback,10)
+        self.controller_sub = self.create_subscription(Float32,'/controller_speed', self.controller_callback,10)
+        self.manual_sub = self.create_subscription(Float32,'/manual_speed', self.manual_callback,10)
+        
+        self.timer = self.create_timer(0.02, self.timer_callback)
         
         self.get_logger().info('===== Carver Mode Switching Node =====')
         self.get_logger().info('Modes: 0=MANUAL, 1=TELEOP, 2=AUTO, 3=JOYSTICK')
@@ -43,51 +45,28 @@ class CarverMode(Node):
         prev_mode_name = self.get_mode_name(self.current_mode)
         
         self.get_logger().info(f'Mode change: {prev_mode_name} → {mode_name}')
-        
-        self.switch_mode(new_mode)
+    
         self.current_mode = new_mode
+
+    def controller_callback(self, msg):
+        self.controller_speed = msg.data
+
+    def manual_callback(self, msg):
+        self.manual_speed = msg.data
     
-    def switch_mode(self, mode):
-        """Enable selected mode, disable all others"""
+    def timer_callback(self):
+        """Publish speed based on current mode"""
+        msg = Float32()
         
-        enable_manual = (mode == self.MODE_MANUAL)
-        enable_teleop = (mode == self.MODE_TELEOP)
-        enable_auto = (mode == self.MODE_AUTO)
-        enable_joystick = (mode == self.MODE_JOYSTICK)
-        self.call_enable_service(self.manual_enable_client, 'MANUAL', enable_manual)
-        self.call_enable_service(self.teleop_enable_client, 'TELEOP', enable_teleop)
-        self.call_enable_service(self.auto_enable_client, 'AUTO', enable_auto)
-        self.call_enable_service(self.joystick_enable_client, 'JOYSTICK', enable_joystick)
+        if self.current_mode == self.MODE_MANUAL:
+            self.get_logger().debug('In MANUAL mode - speed from /manual_speed topic')
+            msg.data = self.manual_speed
+        elif self.current_mode == self.MODE_AUTO:
+            self.get_logger().debug('In AUTO mode - speed from /controller_speed topic')
+            msg.data = self.controller_speed
         
-        self.get_logger().info(f'Switched to {self.get_mode_name(mode)} mode')
-    
-    def call_enable_service(self, client, mode_name, enable):
-        """Call enable service if available"""
-        
-        if not client.service_is_ready():
-            self.get_logger().debug(f'{mode_name} service not available - skipping')
-            return
-        
-        request = SetBool.Request()
-        request.data = enable
-        
-        future = client.call_async(request)
-        future.add_done_callback(
-            lambda f: self.service_response_callback(f, mode_name, enable)
-        )
-    
-    def service_response_callback(self, future, mode_name, enable):
-        """Handle service response"""
-        try:
-            response = future.result()
-            status = "ENABLED" if enable else "DISABLED"
-            if response.success:
-                self.get_logger().debug(f'{mode_name} {status}: {response.message}')
-            else:
-                self.get_logger().warn(f'Failed to change {mode_name}: {response.message}')
-        except Exception as e:
-            self.get_logger().error(f'Service call failed for {mode_name}: {e}')
-    
+        self.speed_pub.publish(msg)
+
     def get_mode_name(self, mode):
         """Get human-readable mode name"""
         if mode == self.MODE_MANUAL:

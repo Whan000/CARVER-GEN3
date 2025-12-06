@@ -19,7 +19,7 @@ class Stanley(Node):
         super().__init__("stanley_node")
 
         self.steering_pub = self.create_publisher(Float32, "/steering_angle", 10)
-        self.speed_pub = self.create_publisher(Float32, "/target_speed", 10)
+        self.speed_pub = self.create_publisher(Float32, "/controller_speed", 10)
         self.path_viz_pub = self.create_publisher(Path, "/path_visualization", 10)
         self.target_marker_pub = self.create_publisher(Marker, "/target_point", 10)
 
@@ -28,13 +28,13 @@ class Stanley(Node):
         )
         self.create_service(SetBool, "/auto/enable", self.bool_service_callback)
 
-        self.declare_parameter("k_heading", 0.25)
-        self.declare_parameter("k_crosstrack", 0.1)
-        self.declare_parameter("ks_gain", 0.1)
-        self.declare_parameter("target_speed", 1.25)
+        self.declare_parameter("k_heading", 0.2) #0.1
+        self.declare_parameter("k_crosstrack", 0.1) #0.15
+        self.declare_parameter("ks_gain", 0.5)
+        self.declare_parameter("target_speed", 1.00)
         self.declare_parameter("max_steer", 0.6)
         self.declare_parameter("steering_sign", 1.0)
-        self.declare_parameter("lookahead_distance", 5.0)
+        self.declare_parameter("L_front_axle", 0.5)  # Front axle offset
         self.declare_parameter(
             "path_file",
             "/home/katana/Desktop/array/carver_ws/src/carver_controller/path/trajectory1000.yaml",
@@ -43,10 +43,11 @@ class Stanley(Node):
         self.k_heading = self.get_parameter("k_heading").value
         self.k_crosstrack = self.get_parameter("k_crosstrack").value
         self.ks = self.get_parameter("ks_gain").value
-        self.target_speed = min(self.get_parameter("target_speed").value, 1.5)
+        self.target_speed = self.get_parameter("target_speed").value
         self.max_steer = self.get_parameter("max_steer").value
         self.steering_sign = self.get_parameter("steering_sign").value
-        self.lookahead_distance = self.get_parameter("lookahead_distance").value
+        self.L_front_axle = self.get_parameter("L_front_axle").value
+        self.turnoff = False
 
         path_file = self.get_parameter("path_file").value
 
@@ -56,11 +57,6 @@ class Stanley(Node):
         self.current_yaw = 0.0
         self.current_speed = 0.0
         self.current_pose = None  # Robot position [x, y]
-
-        # Previous position for velocity vector
-        self.prev_x = 0.0
-        self.prev_y = 0.0
-        self.heading_initialized = False
 
         # Waypoint tracking
         self.current_waypoint_idx = 0
@@ -221,7 +217,6 @@ class Stanley(Node):
         self.get_logger().info(response.message)
         if not self.controller_enabled:
             self.publish_commands(0.0, 0.0)
-            self.heading_initialized = False
             self.current_waypoint_idx = 0  # Reset waypoint index
         return response
 
@@ -233,182 +228,107 @@ class Stanley(Node):
         return angle
 
     def find_target_point(self):
+        """Find closest point on path to vehicle's front axle (Stanley approach)"""
         if self.current_pose is None or len(self.waypoints) < 2:
             return None, None
 
-        # --- 1. Find nearest waypoint to robot ---
-        dists = np.linalg.norm(self.waypoints[:, :2] - self.current_pose, axis=1)
-        nearest_idx = np.argmin(dists)
+        # Calculate front axle position (Stanley uses front axle, not rear/center)
+        fx = self.current_x + self.L_front_axle * math.cos(self.current_yaw)
+        fy = self.current_y + self.L_front_axle * math.sin(self.current_yaw)
+        front_axle_pos = np.array([fx, fy])
+
+        # Find closest waypoint to front axle
+        dists = np.linalg.norm(self.waypoints[:, :2] - front_axle_pos, axis=1)
+        target_idx = np.argmin(dists)
 
         # Ensure monotonic forward movement
-        if nearest_idx < self.current_waypoint_idx:    
-            nearest_idx = self.current_waypoint_idx
-
-        self.current_waypoint_idx = nearest_idx
-
-        # --- 2. Walk forward until we reach lookahead distance ---
-        L = self.lookahead_distance
-        accum_dist = 0.0
-        target_point = None
-        target_segment_idx = nearest_idx
-
-        for i in range(nearest_idx, len(self.waypoints) - 1):
-            p1 = self.waypoints[i, :2]
-            p2 = self.waypoints[i + 1, :2]
-            segment = p2 - p1
-            seg_len = np.linalg.norm(segment)
-
-            if seg_len < 1e-6:
-                continue
-
-            if accum_dist + seg_len >= L:
-                # Interpolate inside this segment
-                t = (L - accum_dist) / seg_len
-                target_point = p1 + t * segment
-                target_segment_idx = i
-                break
-
-            accum_dist += seg_len
-
-        # Fallback to last waypoint if lookahead extends beyond path
-        if target_point is None:
-            target_point = self.waypoints[-1, :2]
-            target_segment_idx = len(self.waypoints) - 2
-
-        # Return target point for heading error and nearest segment for CTE
-        return target_point, nearest_idx
-
-    def calculate_cross_track_error(self, segment_idx):
-        """Calculate cross-track error from current position to path segment
+        if target_idx < self.current_waypoint_idx:
+            target_idx = self.current_waypoint_idx
         
-        Args:
-            segment_idx: Index of path segment to calculate CTE from
-        """
+        self.current_waypoint_idx = target_idx
+
+        # Target point is the closest point on path
+        target_point = self.waypoints[target_idx, :2]
         
-        if self.current_pose is None or segment_idx >= len(self.waypoints) - 1:
+        # For Stanley, use the same point for both heading and CTE
+        return target_point, target_idx
+
+    def calculate_cross_track_error(self, target_idx):
+        """Calculate cross-track error using perpendicular distance to vehicle heading"""
+        if self.current_pose is None or target_idx >= len(self.waypoints):
             return 0.0
 
-        a = self.waypoints[segment_idx, :2]
-        b = self.waypoints[segment_idx + 1, :2]
-        p = self.current_pose
+        # Front axle position
+        fx = self.current_x + self.L_front_axle * math.cos(self.current_yaw)
+        fy = self.current_y + self.L_front_axle * math.sin(self.current_yaw)
 
-        ab = b - a
-        ap = p - a
+        # Error vector from front axle to target point
+        target_point = self.waypoints[target_idx, :2]
+        error_x = target_point[0] - fx
+        error_y = target_point[1] - fy
 
-        # Project robot onto path segment
-        proj = np.dot(ap, ab) / np.dot(ab, ab)
-        proj = np.clip(proj, 0.0, 1.0)
-
-        # Find closest point on path
-        closest = a + proj * ab
-
-        # Vector from closest point to robot
-        error = p - closest
-
-        # Signed cross-track error (corrected - divide by |ab|)
-        cross = ab[0] * error[1] - ab[1] * error[0]
-        cte = cross / np.linalg.norm(ab)
+        # Project error onto perpendicular to vehicle heading
+        # Perpendicular vector: [-sin(yaw), cos(yaw)]
+        cte = error_x * (-math.sin(self.current_yaw)) + error_y * math.cos(self.current_yaw)
 
         return cte
 
-    def compute_heading_error_from_vectors(self, target_point):
-        if target_point is None:
+    def compute_heading_error(self, target_idx):
+        """Compute heading error between vehicle and path tangent"""
+        if target_idx >= len(self.waypoints):
             return 0.0
-        if not self.heading_initialized:
-            self.prev_x = self.current_x
-            self.prev_y = self.current_y
-            self.heading_initialized = True
-            return 0.0
-
-        dx_velocity = self.current_x - self.prev_x
-        dy_velocity = self.current_y - self.prev_y
-        ref_vector = np.array([dx_velocity, dy_velocity])
-
-        # Actual Vector = Target (current → target)
-        dx_target = target_point[0] - self.current_x
-        dy_target = target_point[1] - self.current_y
-        actual_vector = np.array([dx_target, dy_target])
-
-        # Calculate norms
-        ref_norm = np.linalg.norm(ref_vector)
-        actual_norm = np.linalg.norm(actual_vector)
-
-        # Safety: if not moving, use IMU yaw or bearing angle
-        if ref_norm < 0.02:  # < 2cm movement
-            if actual_norm > 1e-6:
-                target_heading = math.atan2(dy_target, dx_target)
-                heading_err = self.normalize_angle(target_heading - self.current_yaw)
-
-                self.prev_x = self.current_x
-                self.prev_y = self.current_y
-
-                return heading_err
-            return 0.0
-
-        if actual_norm < 1e-6:  # Target too close
-            self.prev_x = self.current_x
-            self.prev_y = self.current_y
-            return 0.0
-        cos_theta = np.dot(ref_vector, actual_vector) / (ref_norm * actual_norm)
-        cos_theta = np.clip(cos_theta, -1.0, 1.0)
-
-        theta_rad = np.arccos(cos_theta)
-        cross_product = (
-            ref_vector[0] * actual_vector[1] - ref_vector[1] * actual_vector[0]
-        )
-
-        if cross_product < 0:
-            theta_rad = -theta_rad
-
-        # Debug
-        self.get_logger().info(
-            f"Vel: [{dx_velocity:.3f}, {dy_velocity:.3f}] "
-            f"Tgt: [{dx_target:.3f}, {dy_target:.3f}] "
-            f"HE: {math.degrees(theta_rad):.2f}°",
-            throttle_duration_sec=1.0,
-        )
-
-        # Update previous position
-        self.prev_x = self.current_x
-        self.prev_y = self.current_y
-
-        return self.normalize_angle(theta_rad)
+        
+        # Path heading at target point
+        path_yaw = self.waypoints[target_idx, 2]
+        
+        # Heading error
+        heading_err = self.normalize_angle(path_yaw - self.current_yaw)
+        
+        return heading_err
 
     def stanley_control(self):
-        target, nearest_segment_idx = self.find_target_point()
-        if target is None:
+        target_point, target_idx = self.find_target_point()
+        if target_point is None:
             return 0.0
 
-        self.publish_target_marker(target)
+        self.publish_target_marker(target_point)
         
-        # Heading error: toward lookahead target point
-        heading_err = self.compute_heading_error_from_vectors(target)
+        # Heading error: difference between path tangent and vehicle heading
+        heading_err = self.compute_heading_error(target_idx)
         
-        # Cross-track error: from nearest segment on path
-        cte = self.calculate_cross_track_error(nearest_segment_idx)
+        # Cross-track error: perpendicular distance from front axle to path
+        cte = self.calculate_cross_track_error(target_idx)
         
+        # Stanley control law
         speed = max(self.current_speed, 0.3)
-        heading_term = self.k_heading * heading_err
-        crosstrack_term = -1*math.atan2(self.k_crosstrack * cte, self.ks + speed)
-
+        heading_term = heading_err  # No gain needed, it's already the error
+        crosstrack_term = math.atan2(self.k_crosstrack * cte, speed)
+        
         steer = heading_term + crosstrack_term
         steer = np.clip(steer, -self.max_steer, self.max_steer)
 
         self.get_logger().info(
-            f"WP_idx: {self.current_waypoint_idx}  CTE: {cte:+.3f}m  HE: {math.degrees(heading_err):+6.1f}°  "
-            f"H_term: {math.degrees(heading_term):+6.1f}°  "
-            f"CT_term: {math.degrees(crosstrack_term):+6.1f}°  "
+            f"WP_idx: {target_idx}  CTE: {cte:+.3f}m  HE: {math.degrees(heading_err):+6.1f}°  "
             f"Steer: {self.steering_sign*math.degrees(steer):+6.1f}°",
             throttle_duration_sec=0.5,
         )
         return steer
 
     def control_loop(self):
-        if not self.controller_enabled:
+        # if not self.controller_enabled:
+        #     return
+        
+        final_dist = np.linalg.norm(self.current_pose - self.waypoints[-1, :2])
+        if final_dist < 1.0:
+            self.publish_commands(0.0, 0.0)
+            self.get_logger().info('Reached final waypoint, stopping')
+            # Optionally disable controller here
+            self.turnoff = True
             return
-
-        steer = self.stanley_control()
-        self.publish_commands(steer, self.target_speed)
+        
+        if not self.turnoff:
+            steer = self.stanley_control()
+            self.publish_commands(steer, self.target_speed)
 
     def publish_commands(self, steering_angle, speed):
         self.steering_pub.publish(

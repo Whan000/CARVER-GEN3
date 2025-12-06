@@ -11,7 +11,7 @@ def generate_launch_description():
             arguments=[
                 'serial',
                 '-b', '2000000',
-                '--dev', '/dev/ttyACM1'
+                '--dev', '/dev/ttyACM2'
             ]
         ),
         
@@ -23,7 +23,7 @@ def generate_launch_description():
             arguments=[
                 'serial',
                 '-b', '2000000',
-                '--dev', '/dev/ttyACM2'
+                '--dev', '/dev/ttyACM1'
             ]
         ),
         

@@ -25,11 +25,11 @@ class PurePursuitController(Node):
         # Declare parameters
         self.declare_parameter('wheelbase', 0.8)  # Distance between front and rear axles (m)
         self.declare_parameter('max_steering_angle', 0.6)  # ~30 degrees in radians
-        self.declare_parameter('min_lookahead', 3.0)  # Minimum look-ahead distance (m)
-        self.declare_parameter('max_lookahead', 5.0)  # Maximum look-ahead distance (m)
+        self.declare_parameter('min_lookahead', 2.0)  # Minimum look-ahead distance (m) 3.0
+        self.declare_parameter('max_lookahead', 5.0)  # Maximum look-ahead distance (m) 5.0
         self.declare_parameter('lookahead_gain', 1.0)  # Gain for dynamic look-ahead
-        self.declare_parameter('target_speed', 1.0)  # Target speed (m/s)
-        self.declare_parameter('max_speed', 2.5)  # Maximum speed (m/s)
+        self.declare_parameter('target_speed', 1.00)  # Target speed (m/s)
+        self.declare_parameter('max_speed', 1.00)  # Maximum speed (m/s)
         self.declare_parameter('waypoint_file', os.path.expanduser('/home/katana/Desktop/array/carver_ws/src/carver_controller/path/trajectory1000.yaml'))
         
         # Get parameters
@@ -41,7 +41,7 @@ class PurePursuitController(Node):
         self.target_speed = self.get_parameter('target_speed').value
         self.max_speed = self.get_parameter('max_speed').value
         self.waypoint_file = self.get_parameter('waypoint_file').value
-        
+        self.turnoff = False
         # Subscribers
         self.imu_sub = self.create_subscription(
             Imu,
@@ -54,7 +54,7 @@ class PurePursuitController(Node):
         
         # Publisher
         self.steering_pub = self.create_publisher(Float32, "/steering_angle", 10)
-        self.speed_pub = self.create_publisher(Float32, "/target_speed", 10)
+        self.speed_pub = self.create_publisher(Float32, "/controller_speed", 10)
         self.path_viz_pub = self.create_publisher(Path, "/path_visualization", 10)
         self.target_marker_pub = self.create_publisher(Marker, "/target_point", 10)
 
@@ -71,7 +71,7 @@ class PurePursuitController(Node):
         self.load_waypoints_from_yaml()
         
         # Timer for control loop
-        self.control_timer = self.create_timer(0.02, self.control_loop)  # 20 Hz
+        self.control_timer = self.create_timer(0.02, self.control_loop)  # 50 Hz
         self.create_timer(1.0, self.publish_path_visualization)
         
         self.get_logger().info('Pure Pursuit Controller initialized')
@@ -317,20 +317,20 @@ class PurePursuitController(Node):
             self.get_logger().warn('Waiting for pose and IMU data...', throttle_duration_sec=2.0)
             return
         
-        if not hasattr(self, 'controller_enabled') or not self.controller_enabled:
-            return
+        # if not hasattr(self, 'controller_enabled') or not self.controller_enabled:
+        #     return
         
         if len(self.waypoints) == 0:
             self.get_logger().warn('No waypoints loaded', throttle_duration_sec=2.0)
             return
         
         # Check if we've reached the final waypoint
-        final_dist = np.linalg.norm(self.current_pose - self.waypoints[-1])
-        if final_dist < 0.5:  # Within 0.5m of final waypoint
-            self.get_logger().info('Reached final waypoint, stopping')
-            self.speed_pub.publish(Float32(data=0.0))
-            self.steering_pub.publish(Float32(data=0.0))
-            return
+        # final_dist = np.linalg.norm(self.current_pose - self.waypoints[-1])
+        # if final_dist < 0.5:  # Within 0.5m of final waypoint
+        #     self.get_logger().info('Reached final waypoint, stopping')
+        #     self.speed_pub.publish(Float32(data=0.0))
+        #     self.steering_pub.publish(Float32(data=0.0))
+        #     return
         
         # Calculate dynamic look-ahead distance
         lookahead_distance = self.calculate_dynamic_lookahead()
@@ -342,6 +342,15 @@ class PurePursuitController(Node):
             self.get_logger().warn('No target point found')
             return
         
+        final_dist = np.linalg.norm(self.current_pose - self.waypoints[-1, :2])
+        if final_dist < 1.0:
+            self.speed_pub.publish(Float32(data=0.0))
+            self.steering_pub.publish(Float32(data=0.0))
+            self.get_logger().info('Reached final waypoint, stopping')
+            # Optionally disable controller here
+            self.turnoff = True
+            return
+            
         # Calculate steering angle
         steering_angle = self.calculate_steering_angle(target_point)
         
@@ -349,18 +358,19 @@ class PurePursuitController(Node):
         speed = self.calculate_speed(steering_angle)
         
         # Publish Ackermann command
-        self.speed_pub.publish(Float32(data=speed))
-        self.steering_pub.publish(Float32(data=steering_angle))
+        if not self.turnoff:
+            self.speed_pub.publish(Float32(data=speed))
+            self.steering_pub.publish(Float32(data=steering_angle))
         
         # Debug logging
-        self.get_logger().info(
-            f'Lookahead: {lookahead_distance:.2f}m, '
-            f'Steering: {math.degrees(steering_angle):.2f}°, '
-            f'Speed: {speed:.2f}m/s, '
-            f'Target Point: ({target_point[0]:.2f}, {target_point[1]:.2f}), '
-            f'Waypoint: {self.current_waypoint_idx}/{len(self.waypoints)}'
-            f'Pos: {self.current_pose}'
-        )
+            self.get_logger().info(
+                f'Lookahead: {lookahead_distance:.2f}m, '
+                f'Steering: {math.degrees(steering_angle):.2f}°, '
+                f'Speed: {speed:.2f}m/s, '
+                f'Target Point: ({target_point[0]:.2f}, {target_point[1]:.2f}), '
+                f'Waypoint: {self.current_waypoint_idx}/{len(self.waypoints)}'
+                f'Pos: {self.current_pose}'
+            )
 
 
 def main(args=None):

@@ -21,10 +21,10 @@ class CarverManualSteering(Node):
         self.publishing_enabled = self.get_parameter('start_enabled').get_parameter_value().bool_value
         self.current_adc = 0
         self.current_direction = 0
-        self.speed_pub = self.create_publisher(Float32, '/target_speed', 10)
+        self.speed_pub = self.create_publisher(Float32, '/manual_speed', 10)
         self.accel_sub = self.create_subscription(UInt16, '/accl_publisher', self.accel_callback, 10)
         self.direction_sub = self.create_subscription(Int8, '/accel_direction', self.direction_callback, 10)
-        self.enable_service = self.create_service(SetBool,'/manual/enable',self.enable_callback)
+
         timer_period = 1.0 / self.update_rate
         self.timer = self.create_timer(timer_period, self.compute_and_publish)
         
