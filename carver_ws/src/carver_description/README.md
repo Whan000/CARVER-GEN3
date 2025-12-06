@@ -2,14 +2,11 @@
 
 ## How to install
 
-1. Clone this git in your **workspace->src**.
+1. **Colcon build and source** your workspace
 ```bash
-git clone https://github.com/CARVER-NEXT-GEN/carver_description.git
-```
-
-2. **Colcon build and source** your workspace
-```bash
-colcon build && source ~/.bashrc
+cd ~/carver_ws
+colcon build --symlink-install
+source install/setup.bash
 ```
 3. Display rviz
 ```bash
