@@ -10,6 +10,7 @@
   <img src="https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square" alt="License MIT">
   <img src="https://img.shields.io/badge/Drive-Rear%20Wheel-lightgrey?style=flat-square" alt="Rear Wheel Drive">
   <img src="https://img.shields.io/badge/Steering-Ackermann-lightblue?style=flat-square" alt="Ackermann Steering">
+  <img src="https://img.shields.io/github/contributors/Whan000/CARVER-GEN3" alt="Contribute">
 </p>
 
 
@@ -998,12 +999,14 @@ colcon build
 
 This project exists thanks to all the people who contributed.
 
+
 <a href="https://github.com/Whan000/CARVER-GEN3/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Whan000/CARVER-GEN3" />
+  <img src="https://contrib.rocks/image?repo=Whan000/CARVER-GEN3&t=1" />
 </a>
 
 ### Academic Papers
 
 - **MOLA:** "A Modular Optimization Framework for Localization and Mapping" (RSS 2019)
-- **Stanley:** "Stanley: The Robot that Won the DARPA Grand Challenge"
-- **Pure Pursuit:** "Implementation of the Pure Pursuit Path Tracking Algorithm"
+- **Stanley Controller:** "Stanley: The Robot that Won the DARPA Grand Challenge"
+- **Pure Pursuit Controller:** "Implementation of the Pure Pursuit Path Tracking Algorithm"
+- **Combined Controller:** "Combined Path Following Controller for Autonomous Vehicles"
