@@ -789,6 +789,48 @@ waypoints:
 
 ## 10. Localization and Mapping
 
+---
+
+## 10. Localization and Mapping
+
+### SLAM Method Evaluation
+
+During development, we evaluated four LiDAR-based SLAM frameworks to determine the best fit for the Carver platform. Each method was tested with the Livox MID360 LiDAR under real-world conditions.
+
+**Methods Evaluated:**
+
+- **LIO-SAM** - Tightly-coupled LiDAR-Inertial odometry via smoothing and mapping using factor graphs. Provides loop closure and GPS integration capabilities.
+  - Repository: https://github.com/TixiaoShan/LIO-SAM/tree/ros2
+
+- **FAST-LIO / FAST-LIO2** - Fast direct LiDAR-Inertial odometry using iterated Kalman filter with incremental kd-tree (ikd-Tree). Known for computational efficiency and robustness.
+  - Repository: https://github.com/hku-mars/FAST_LIO/tree/ROS2
+  - ROS2 Fork: https://github.com/Ericsii/FAST_LIO_ROS2
+
+- **lidarslam_ros2 (rsasaki)** - Modular LiDAR SLAM with NDT/GICP scan matching and graph-based optimization. Includes separate localization package for navigation.
+  - SLAM: https://github.com/rsasaki0109/lidarslam_ros2
+  - Localization: https://github.com/rsasaki0109/lidar_localization_ros2
+
+- **MOLA** - Modular Optimization framework for Localization And mapping. Flexible pipeline architecture supporting multiple front-ends and back-ends with real-time performance.
+  - Repository: https://github.com/MOLAorg/mola
+
+**Why MOLA?**
+
+After extensive testing, MOLA was selected for the following reasons:
+
+1. **Superior Localization Accuracy** - Achieved consistent sub-2cm accuracy in our test environment, outperforming other methods in repeated trials.
+
+2. **Robust Map Quality** - Produced clean, dense point cloud maps with minimal drift over long trajectories.
+
+3. **Flexible Architecture** - Modular pipeline design allows easy switching between ICP/GICP/NDT matching algorithms and different optimization backends.
+
+4. **Native Livox Support** - Works seamlessly with non-repetitive scanning patterns of Livox MID360 without requiring point cloud preprocessing.
+
+5. **Separate Mapping and Localization** - Clean separation between offline mapping (SLAM) and online localization modes, ideal for autonomous navigation workflows.
+
+6. **Active Development** - Well-maintained with comprehensive documentation and responsive community support.
+
+---
+
 ### System Overview
 
 **Two-Stage Approach:**
