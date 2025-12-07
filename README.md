@@ -790,10 +790,6 @@ waypoints:
 
 ## 10. Localization and Mapping
 
----
-
-## 10. Localization and Mapping
-
 ### SLAM Method Evaluation
 
 During development, we evaluated four LiDAR-based SLAM frameworks to determine the best fit for the Carver platform. Each method was tested with the Livox MID360 LiDAR under real-world conditions.
