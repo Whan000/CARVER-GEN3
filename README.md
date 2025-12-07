@@ -963,5 +963,6 @@ This project exists thanks to all the people who contributed.
 ### Academic Papers
 
 - **MOLA:** "A Modular Optimization Framework for Localization and Mapping" (RSS 2019)
-- **Stanley:** "Stanley: The Robot that Won the DARPA Grand Challenge"
-- **Pure Pursuit:** "Implementation of the Pure Pursuit Path Tracking Algorithm"
+- **Stanley Controller:** "Stanley: The Robot that Won the DARPA Grand Challenge"
+- **Pure Pursuit Controller:** "Implementation of the Pure Pursuit Path Tracking Algorithm"
+- **Combined Controller:** "Combined Path Following Controller for Autonomous Vehicles"
