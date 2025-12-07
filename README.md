@@ -73,7 +73,7 @@ CARVER-GEN3 is an autonomous mobile robot platform with rear-wheel drive, Ackerm
 
 ## 2. System Architecture
 
-![System Architecture](media/System%20Architecture.png)
+[View System Architecture (PDF)](media/System%20Architecture.pdf)
 
 ### System Overview
 
