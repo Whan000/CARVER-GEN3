@@ -956,9 +956,7 @@ colcon build
 
 This project exists thanks to all the people who contributed.
 
-<a href="https://github.com/Whan000/CARVER-GEN3/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Whan000/CARVER-GEN3&t=1" />
-</a>
+[![All Contributors](https://img.shields.io/github/contributors/Whan000/CARVER-GEN3)](https://github.com/Whan000/CARVER-GEN3/graphs/contributors)
 
 ### Academic Papers
 
