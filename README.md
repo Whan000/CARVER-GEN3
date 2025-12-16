@@ -24,11 +24,33 @@ CARVER-GEN3 is an autonomous mobile robot platform with rear-wheel drive, Ackerm
 **Operating System:** Ubuntu 22.04 LTS  
 **License:** MIT  
 
-<p align="center">
-  <a href="media/demo.mp4">
-    <img src="media/demo.webp" alt="Demo Video">
-  </a>
-</p>
+## Showcase Video
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <a href="https://youtu.be/Iv2-noh69lY">
+        <img src="https://img.youtube.com/vi/Iv2-noh69lY/maxresdefault.jpg" alt="Video 1" width="300">
+      </a>
+      <br>
+      <strong>Localization via MOLA-LO</strong>
+    </td>
+    <td align="center">
+      <a href="https://youtu.be/441KLE3GS2M">
+        <img src="https://img.youtube.com/vi/441KLE3GS2M/maxresdefault.jpg" alt="Video 2" width="300">
+      </a>
+      <br>
+      <strong>SLAM via MOLA-LO</strong>
+    </td>
+    <td align="center">
+      <a href="https://youtu.be/H5Jg9BY5g1w">
+        <img src="https://img.youtube.com/vi/H5Jg9BY5g1w/maxresdefault.jpg" alt="Video 3" width="300">
+      </a>
+      <br>
+      <strong>Controller Path Tracking Showcase</strong>
+    </td>
+  </tr>
+</table>
 
 ---
 
